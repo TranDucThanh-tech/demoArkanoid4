@@ -28,6 +28,7 @@ public class CollisionManager {
         Collision collision = buildCollision(ball, paddle);
         if (collision == null) return;
         ball.adjustPositionAbovePaddle(paddle);
+        // Reflection angle based on where the ball hits the paddle
         double angle = ball.calculateAngle(paddle);
         ball.setVelocity(new Vector2D(Math.cos(angle), -Math.sin(angle)));
         //SoundManager.getInstance().playSound("paddle_hit");
@@ -70,7 +71,7 @@ public class CollisionManager {
                 } else {
                     ball.setVelocity(new Vector2D(v.x, -v.y));
                 }
-                break; // bóng chỉ va chạm 1 brick mỗi frame
+                break; // Only one brick per frame
             }
         }
     }

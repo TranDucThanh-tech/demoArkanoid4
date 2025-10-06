@@ -17,15 +17,14 @@ public class GameObject {
     private double scaleX;
     private double scaleY;
 
-
-    public GameObject(String imagePath, double startX, double startY) { // this constructor uses preloaded images
+    public GameObject(String imagePath, double startX, double startY) {
         setImagePath(imagePath);
         x = startX;
         y = startY;
         setPosition();
     }
 
-    public GameObject(Image image, double startX, double startY) { // this constructor uses preloaded images
+    public GameObject(Image image, double startX, double startY) {
         setImage(image);
         x = startX;
         y = startY;
@@ -39,20 +38,15 @@ public class GameObject {
         this.height = image.getHeight();
     }
 
-    // Sets the image from a preloaded Image object
-    public void setImage(Image image) { //set image
+    public void setImage(Image image) {
         this.image = image;
-
-        // Creating imageview if not yet created
         if (this.imageView == null) {
             this.imageView = new ImageView(image);
         } else {
             this.imageView.setImage(image);
         }
-
         this.width = image.getWidth();
         this.height = image.getHeight();
-
         if (this.scaleX != 0 && this.scaleY != 0) {
             setScale(this.scaleX, this.scaleY);
         }
@@ -70,10 +64,6 @@ public class GameObject {
         imageView.setFitHeight(height * sy);
     }
 
-    public boolean checkCollision(GameObject other) {
-        if (this == other) return false; // ignore self
-        return this.getBounds().intersects(other.getBounds());
-    }
 
     public void drawObject(GraphicsContext gc) {
         if (gc == null) return;
@@ -100,8 +90,9 @@ public class GameObject {
         return image;
     }
 
+    // True bounding box based on x/y/width/height for reliable collision
     public Bounds getBounds() {
-        return imageView.getBoundsInParent();
+        return new javafx.geometry.BoundingBox(x, y, width, height);
     }
 
     public void setY(double v) {
@@ -110,5 +101,3 @@ public class GameObject {
 
     public void setX(double v) { x = v; }
 }
-
-

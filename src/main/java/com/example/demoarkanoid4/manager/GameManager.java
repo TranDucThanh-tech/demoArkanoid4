@@ -36,6 +36,7 @@ public class GameManager extends Pane {
         // Initialize paddle and ball
         Paddle paddle = new Paddle();
         paddleManager = new PaddleManager(paddle);
+
         ball = new Ball("/images/Ball.png", VARIABLES.INIT_BALL_X, VARIABLES.INIT_BALL_Y, VARIABLES.SPEED);
 
         // Initialize walls
@@ -60,16 +61,21 @@ public class GameManager extends Pane {
     }
 
     public void update(double deltaTime) {
-        // Check collisions
+        // 1) cập nhật paddle trước để ball (nếu ở trạng thái stuck) đặt đúng vị trí dựa vào paddle
+        paddleManager.update(deltaTime);
+
+        // 2) cập nhật bóng (nếu stuck thì nó sẽ follow paddle)
+        ball.update(deltaTime, paddleManager.getPaddle());
+
+        // 3) kiểm tra va chạm (dựa trên vị trí mới của bóng)
         collisionManager.handleBallPaddleCollision(ball, paddleManager.getPaddle());
         collisionManager.handleBallWallCollision(ball, walls);
         collisionManager.handleBallBrickCollision(ball, brickManager.getBricks());
 
-        // Update bricks (remove destroyed ones + trigger powerups)
+        // 4) cập nhật bricks (hoặc logic powerups)
         brickManager.update();
-        ball.update(deltaTime, paddleManager.getPaddle());
-        paddleManager.update(deltaTime);
     }
+
 
     public void render() {
         gc.clearRect(0,0, VARIABLES.WIDTH, VARIABLES.HEIGHT);

@@ -4,9 +4,8 @@ import com.example.demoarkanoid4.core.GameObject;
 import com.example.demoarkanoid4.vector2D.Vector2D;
 import com.example.demoarkanoid4.core.paddle.PaddleLike;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
 
-public class Ball extends GameObject implements BallLike, PaddleLike{
+public class Ball extends GameObject implements BallLike {
     private final double baseSpeed;
     private double currentSpeed;
     private boolean stuck;
@@ -18,7 +17,7 @@ public class Ball extends GameObject implements BallLike, PaddleLike{
         this.baseSpeed = speed;
         this.currentSpeed = speed;
         this.stuck = true;
-        this.velocity = new Vector2D(0, -1);
+        this.velocity = new Vector2D(0, -1); // Upwards
     }
     public void applyAcceleration(double multiplier) {
         accelerated = true;
@@ -29,36 +28,51 @@ public class Ball extends GameObject implements BallLike, PaddleLike{
         currentSpeed = baseSpeed;
     }
     public void update(double deltaTime, PaddleLike paddle) {
-        if (stuck){
+        if (isStuck()){
             setX(paddle.getX() + paddle.getWidth() / 2.0 - getWidth() / 2.0);
             setY(paddle.getY() - getHeight());
+            setPosition();
         }
         else {
             Vector2D step = velocity.normalize().multiply(currentSpeed * deltaTime);
             setX(getX() + step.x);
             setY(getY() + step.y);
         }
-        setPosition();
     }
-    public void release() {
-        if (stuck) {
-            stuck = false;
-            velocity = new Vector2D(0, -1);
+    public void release(PaddleLike paddle) {
+        if (isStuck()) {
+            launch();
+            // Set velocity based on where the ball is on the paddle
+            double angle = calculateAngle(paddle);
+            velocity = new Vector2D(Math.cos(angle), -Math.sin(angle));
+            // Ensure speed positive
+            if (currentSpeed <= 0) currentSpeed = baseSpeed;
+            System.out.printf("Ball.release(paddle): stuck=%b vel=(%.3f,%.3f) speed=%.3f%n",
+                    stuck, velocity.x, velocity.y, currentSpeed);
         }
+    }
+    // Overload: for compatibility with old code, but should pass paddle!
+    public void release() {
+        stick();
+        velocity = new Vector2D(0, -1);
+        if (currentSpeed <= 0) currentSpeed = baseSpeed;
     }
 
     public double calculateHitRatio(PaddleLike paddle) {
-        double paddleLeft = paddle.getBounds().getMinX();
-        double ballCenterX = getBounds().getMinX() + getWidth() / 2.0;
+        double paddleLeft = paddle.getX();
+        double ballCenterX = getX() + getWidth() / 2.0;
         return (ballCenterX - paddleLeft) / paddle.getWidth();
     }
 
     public double calculateAngle(PaddleLike paddle){
-        return Math.toRadians(150 * (1 - calculateHitRatio(paddle)) + 30 * calculateHitRatio(paddle));
+        // Returns angle in radians between 30° (right edge) and 150° (left edge)
+        // 0 = left, 1 = right
+        double ratio = calculateHitRatio(paddle);
+        return Math.toRadians(150 * (1 - ratio) + 30 * ratio);
     }
 
     public void adjustPositionAbovePaddle(PaddleLike paddle) {
-        setY(paddle.getBounds().getMinY() - getHeight());
+        setY(paddle.getY() - getHeight());
         this.setPosition();
     }
 
@@ -67,12 +81,19 @@ public class Ball extends GameObject implements BallLike, PaddleLike{
                 this.getWidth(), this.getHeight());
     }
 
+    public void setVelocity(Vector2D v) {
+        if (v == null || (v.x == 0 && v.y == 0)) {
+            velocity = new Vector2D(0, -1);
+        } else {
+            velocity = v.normalize();
+        }
+    }
+
     public void stick() { stuck = true; }
     public void launch() { stuck = false;}
     public boolean isStuck() {return stuck; }
     public double getSpeed() { return currentSpeed; }
     public void setSpeed(double speed) { this.currentSpeed = speed; }
     public Vector2D getVelocity() { return velocity; }
-    public void setVelocity(Vector2D v) { velocity = v.normalize(); }
-}
 
+}

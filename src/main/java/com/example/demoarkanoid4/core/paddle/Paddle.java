@@ -14,7 +14,6 @@ public class Paddle extends GameObject implements PaddleLike{
     }
 
     public void update(double deltaTime) {
-        // Move according to direction and speed
         setX(getX() + direction * speed * deltaTime);
 
         // Clamp inside screen
@@ -40,4 +39,5 @@ public class Paddle extends GameObject implements PaddleLike{
         gc.drawImage(this.getImage(), this.getX(), this.getY(),
                 this.getWidth(), this.getHeight());
     }
+    // Optionally override getBounds() if you want rounded paddle, else use parent's
 }
