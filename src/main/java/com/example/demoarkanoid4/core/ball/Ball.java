@@ -1,5 +1,6 @@
 package com.example.demoarkanoid4.core.ball;
 
+import com.example.demoarkanoid4.VARIABLES;
 import com.example.demoarkanoid4.core.GameObject;
 import com.example.demoarkanoid4.vector2D.Vector2D;
 import com.example.demoarkanoid4.core.paddle.PaddleLike;
@@ -12,10 +13,10 @@ public class Ball extends GameObject implements BallLike {
     private Vector2D velocity;
     private boolean accelerated;
 
-    public Ball(String image, double x, double y, double speed) {
-        super(image, x, y);
-        this.baseSpeed = speed;
-        this.currentSpeed = speed;
+    public Ball() {
+        super(VARIABLES.IMAGE_OF_BALL, VARIABLES.INIT_BALL_X, VARIABLES.INIT_BALL_Y);
+        this.baseSpeed = VARIABLES.SPEED_OF_BALL;
+        this.currentSpeed = VARIABLES.SPEED_OF_BALL;
         this.stuck = true;
         this.velocity = new Vector2D(0, -1); // Upwards
     }
@@ -53,7 +54,7 @@ public class Ball extends GameObject implements BallLike {
     }
     // Overload: for compatibility with old code, but should pass paddle!
     public void release() {
-        stick();
+        launch();
         velocity = new Vector2D(0, -1);
         if (currentSpeed <= 0) currentSpeed = baseSpeed;
     }

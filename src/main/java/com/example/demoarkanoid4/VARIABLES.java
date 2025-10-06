@@ -11,8 +11,9 @@ public interface VARIABLES {
 
     public static final int INIT_BALL_X = WIDTH / 2 - 10;
     public static final int INIT_BALL_Y = HEIGHT - 60;
-    public static final float SPEED = 400.0F;
-    ;
+    public static final float SPEED_OF_BALL = 400.0F;
+    public static final float SPEED_OF_PADDLE = 500.0F;
+
     public static final float ACCELERATED_SPEED_MULTIPLIER = 2.0F;
 
     public static final int WIDTH_OF_WALLS = 15;
@@ -29,4 +30,8 @@ public interface VARIABLES {
     public static final int HEIGHT_OF_BRICKS = 16;
     public static final int FIRST_X_OF_BRICKS = WIDTH_OF_WALLS + PADDING_X/2;
     public static final int FIRST_Y_OF_BRICKS = HEIGHT_OF_WALLS + PADDING_Y/2;
+
+    public static final String IMAGE_OF_BALL = "/images/Ball.png";
+    public static final String IMAGE_OF_PADDLE = "/images/Paddle.png";
+    public static final String IMAGE_OF_WALL = "/images/Wall.png";
 }

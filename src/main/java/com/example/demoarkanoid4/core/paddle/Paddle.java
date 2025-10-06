@@ -6,10 +6,11 @@ import javafx.scene.canvas.GraphicsContext;
 
 public class Paddle extends GameObject implements PaddleLike{
     private int direction;          // -1 = left, 0 = stop, 1 = right
-    private double speed = 400.0;
+    private double speed;
 
     public Paddle() {
-        super("/images/Paddle.png", VARIABLES.INIT_PADDLE_X, VARIABLES.INIT_PADDLE_Y);
+        super(VARIABLES.IMAGE_OF_PADDLE, VARIABLES.INIT_PADDLE_X, VARIABLES.INIT_PADDLE_Y);
+        this.speed = VARIABLES.SPEED_OF_PADDLE;
         resetState();
     }
 

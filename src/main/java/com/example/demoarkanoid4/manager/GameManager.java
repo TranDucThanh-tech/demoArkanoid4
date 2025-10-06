@@ -16,11 +16,13 @@ public class GameManager extends Pane {
     private AnimationTimer timer;
     private BrickManager brickManager;
     private CollisionManager collisionManager;
+    private WallManager wallManager;
     private Ball ball;
     private PaddleManager paddleManager;
     private List<Wall> walls;
     private boolean inGame;
     private GraphicsContext gc;
+
 
     public GameManager() {
         setFocusTraversable(true); // To allow requestFocus()
@@ -32,31 +34,17 @@ public class GameManager extends Pane {
         Canvas canvas = new Canvas(VARIABLES.WIDTH, VARIABLES.HEIGHT);
         gc = canvas.getGraphicsContext2D();
         getChildren().add(canvas);
-
-        // Initialize paddle and ball
-        Paddle paddle = new Paddle();
-        paddleManager = new PaddleManager(paddle);
-
-        ball = new Ball("/images/Ball.png", VARIABLES.INIT_BALL_X, VARIABLES.INIT_BALL_Y, VARIABLES.SPEED);
-
-        // Initialize walls
-        walls = new ArrayList<>();
-        // left wall
-        walls.add(new Wall(Wall.Side.LEFT, 0, 0, VARIABLES.WIDTH_OF_WALLS, VARIABLES.HEIGHT));
-        // right wall
-        walls.add(new Wall(Wall.Side.RIGHT, VARIABLES.WIDTH - VARIABLES.WIDTH_OF_WALLS, 0, VARIABLES.WIDTH_OF_WALLS, VARIABLES.HEIGHT));
-        // top wall
-        walls.add(new Wall(Wall.Side.TOP, 0, 0, VARIABLES.WIDTH, VARIABLES.HEIGHT_OF_WALLS));
-
         inGame = true;
-
         gameInit();
     }
 
     private void gameInit() {
+        ball = new Ball();
         brickManager = new BrickManager();
         collisionManager = new CollisionManager();
+        paddleManager = new PaddleManager();
         brickManager.generateLevel();
+        wallManager.generateLevel();
         loop();
     }
 
@@ -89,18 +77,16 @@ public class GameManager extends Pane {
     }
 
     private void loop() {
-        final double FPS = 60.0;
-        final double UPDATE_INTERVAL = 1e9 / FPS;
-        final long[] lastUpate = {System.nanoTime()};
-
         timer = new AnimationTimer() {
+            private long lastUpdate = System.nanoTime();
+
             @Override
             public void handle(long now) {
-                while (now - lastUpate[0] >= UPDATE_INTERVAL) {
-                    update(1.0 / FPS);
-                    lastUpate[0] += UPDATE_INTERVAL;
-                }
+                double deltaTime = (now - lastUpdate) / 1_000_000_000.0; // seconds
+                if (deltaTime > 0.05) deltaTime = 0.05; // clamp to avoid jumps
+                update(deltaTime);
                 render();
+                lastUpdate = now;
             }
         };
         timer.start();

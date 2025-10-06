@@ -21,7 +21,6 @@ public class Brick extends GameObject{
     }
 
     public Brick(int x, int y) {
-
         super(getImageFromHealth(new Random().nextInt(MAX_HEALTH) + 1), x, y); // load brick (with random health) at given position
         this.health = getHealthFromImage(this.image);
         destroyed = false;

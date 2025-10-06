@@ -6,8 +6,8 @@ import javafx.scene.canvas.GraphicsContext;
 public class PaddleManager {
     private Paddle paddle;
 
-    public PaddleManager(Paddle paddle) {
-        this.paddle = paddle;
+    public PaddleManager() {
+         this.paddle = new Paddle();
     }
 
     public void update(double deltaTime) {
