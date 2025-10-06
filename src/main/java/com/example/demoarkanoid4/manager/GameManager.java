@@ -9,9 +9,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.*;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class GameManager extends Pane {
@@ -24,23 +22,39 @@ public class GameManager extends Pane {
     private boolean inGame;
     private GraphicsContext gc;
 
-
     public GameManager() {
+        setFocusTraversable(true); // To allow requestFocus()
         initBoard();
     }
 
-    private void initBoard(){
+    private void initBoard() {
         setPrefSize(VARIABLES.WIDTH, VARIABLES.HEIGHT);
         Canvas canvas = new Canvas(VARIABLES.WIDTH, VARIABLES.HEIGHT);
         gc = canvas.getGraphicsContext2D();
+        getChildren().add(canvas);
+
+        // Initialize paddle and ball
+        Paddle paddle = new Paddle();
+        paddleManager = new PaddleManager(paddle);
+        ball = new Ball("/images/Ball.png", VARIABLES.INIT_BALL_X, VARIABLES.INIT_BALL_Y, VARIABLES.SPEED);
+
+        // Initialize walls
+        walls = new ArrayList<>();
+        // left wall
+        walls.add(new Wall(Wall.Side.LEFT, 0, 0, VARIABLES.WIDTH_OF_WALLS, VARIABLES.HEIGHT));
+        // right wall
+        walls.add(new Wall(Wall.Side.RIGHT, VARIABLES.WIDTH - VARIABLES.WIDTH_OF_WALLS, 0, VARIABLES.WIDTH_OF_WALLS, VARIABLES.HEIGHT));
+        // top wall
+        walls.add(new Wall(Wall.Side.TOP, 0, 0, VARIABLES.WIDTH, VARIABLES.HEIGHT_OF_WALLS));
+
+        inGame = true;
+
         gameInit();
     }
 
-    private void gameInit(){
+    private void gameInit() {
         brickManager = new BrickManager();
         collisionManager = new CollisionManager();
-
-        // generate map
         brickManager.generateLevel();
         loop();
     }
@@ -54,6 +68,7 @@ public class GameManager extends Pane {
         // Update bricks (remove destroyed ones + trigger powerups)
         brickManager.update();
         ball.update(deltaTime, paddleManager.getPaddle());
+        paddleManager.update(deltaTime);
     }
 
     public void render() {
@@ -99,5 +114,12 @@ public class GameManager extends Pane {
         // stop background music
         //SoundManager.getInstance().stopMusic();
     }
-}
 
+    // --- Add these getter methods for Main and InputHandler ---
+    public Ball getBall() {
+        return ball;
+    }
+    public Paddle getPaddle() {
+        return paddleManager.getPaddle();
+    }
+}
