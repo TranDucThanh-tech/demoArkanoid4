@@ -1,4 +1,4 @@
-package com.example.demoarkanoid4.vector2D;
+package com.example.demoarkanoid4.utils;
 
 public class Vector2D {
     public double x,y;

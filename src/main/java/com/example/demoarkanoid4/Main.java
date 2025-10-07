@@ -10,19 +10,22 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        GameManager gameManager = new GameManager();
-        Scene scene = new Scene(gameManager, VARIABLES.WIDTH, VARIABLES.HEIGHT);
+        try {
+            GameManager gameManager = new GameManager();
+            Scene scene = new Scene(gameManager, VARIABLES.WIDTH, VARIABLES.HEIGHT);
 
-        // Input handler setup (assuming you have getPaddle() and getBall() in GameManager)
-        InputHandler inputHandler = new InputHandler(gameManager.getPaddle(), gameManager.getBall());
-        inputHandler.input(scene);
+            InputHandler inputHandler = new InputHandler(gameManager.getPaddle(), gameManager.getBall());
+            inputHandler.input(scene);
 
-        primaryStage.setTitle("Arkanoid Game");
-        primaryStage.setScene(scene);
-        primaryStage.show();
+            primaryStage.setTitle("Arkanoid Game");
+            primaryStage.setScene(scene);
+            primaryStage.show();
 
-        // Make sure GameManager receives keyboard focus
-        gameManager.requestFocus();
+            gameManager.requestFocus(); // focus AFTER scene is shown
+        } catch (Exception e) {
+            System.err.println("Failed to launch Arkanoid Game: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {

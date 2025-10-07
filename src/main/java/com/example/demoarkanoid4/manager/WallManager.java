@@ -1,11 +1,9 @@
 package com.example.demoarkanoid4.manager;
 import com.example.demoarkanoid4.VARIABLES;
-import com.example.demoarkanoid4.core.Brick;
 import com.example.demoarkanoid4.core.Wall;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class WallManager {

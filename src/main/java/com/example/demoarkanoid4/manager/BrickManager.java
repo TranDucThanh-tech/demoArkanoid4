@@ -1,7 +1,7 @@
 package com.example.demoarkanoid4.manager;
 
 import com.example.demoarkanoid4.VARIABLES;
-import com.example.demoarkanoid4.core.Brick;
+import com.example.demoarkanoid4.core.brick.Brick;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.util.ArrayList;
@@ -29,7 +29,6 @@ public class BrickManager {
             if (brick.isDestroyed()) {
                 iterator.remove();
                 // TODO: báo cho PowerUpManager hoặc ScoreManager
-                // PowerUpManager.spawn(brick.getX(), brick.getY());
             }
         }
     }

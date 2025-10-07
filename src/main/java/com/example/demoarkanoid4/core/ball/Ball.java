@@ -2,7 +2,7 @@ package com.example.demoarkanoid4.core.ball;
 
 import com.example.demoarkanoid4.VARIABLES;
 import com.example.demoarkanoid4.core.GameObject;
-import com.example.demoarkanoid4.vector2D.Vector2D;
+import com.example.demoarkanoid4.utils.Vector2D;
 import com.example.demoarkanoid4.core.paddle.PaddleLike;
 import javafx.scene.canvas.GraphicsContext;
 
@@ -33,9 +33,23 @@ public class Ball extends GameObject implements BallLike {
             resetState(paddle);
         }
         if (isStuck()){
-            x = paddle.getX() + paddle.getWidth() / 2.0 - width / 2.0;
-            y = paddle.getY() - height;
-            setPosition();
+            if (stuck) {
+                double targetX = paddle.getX() + paddle.getWidth() / 2.0 - getWidth() / 2.0;
+                double targetY = paddle.getY() - getHeight();
+
+                double lerpFactor = 0.1; // càng nhỏ thì bóng càng "nặng"
+                x += (targetX - x) * lerpFactor;
+                y += (targetY - y) * lerpFactor;
+
+                // Giới hạn bóng trong phạm vi paddle
+                double minX = paddle.getX();
+                double maxX = paddle.getX() + paddle.getWidth() - getWidth();
+                if (x < minX) x = minX;
+                if (x > maxX) x = maxX;
+
+                setPosition();
+            }
+
         }
         else {
             Vector2D step = velocity.normalize().multiply(currentSpeed * deltaTime);
@@ -75,7 +89,7 @@ public class Ball extends GameObject implements BallLike {
     }
 
     public void adjustPositionAbovePaddle(PaddleLike paddle) {
-        setY(paddle.getY() - getHeight());
+        y = paddle.getY() - height;
         this.setPosition();
     }
 

@@ -4,9 +4,9 @@ import com.example.demoarkanoid4.core.ball.Ball;
 import com.example.demoarkanoid4.core.paddle.Paddle;
 import com.example.demoarkanoid4.core.Collision;
 import com.example.demoarkanoid4.core.GameObject;
-import com.example.demoarkanoid4.vector2D.Vector2D;
+import com.example.demoarkanoid4.utils.Vector2D;
 import com.example.demoarkanoid4.core.Wall;
-import com.example.demoarkanoid4.core.Brick;
+import com.example.demoarkanoid4.core.brick.Brick;
 
 import java.util.List;
 

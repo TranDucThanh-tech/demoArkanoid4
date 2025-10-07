@@ -1,24 +1,18 @@
 package com.example.demoarkanoid4.core;
 
 import javafx.geometry.Bounds;
+import javafx.geometry.BoundingBox;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.canvas.GraphicsContext;
-
 import java.util.Objects;
 
 public class GameObject {
-    protected double x;
-    protected double y;
-    protected double width;
-    protected double height;
+    protected double x, y, width, height;
     protected Image image;
     protected ImageView imageView;
-    private double scaleX;
-    private double scaleY;
-    private final Rectangle2D bounds = new Rectangle2D(x, y, width, height);
-
+    private double scaleX = 1, scaleY = 1;
 
     public GameObject(String imagePath, double startX, double startY) {
         setImagePath(imagePath);
@@ -50,14 +44,12 @@ public class GameObject {
         }
         this.width = image.getWidth();
         this.height = image.getHeight();
-        if (this.scaleX != 0 && this.scaleY != 0) {
-            setScale(this.scaleX, this.scaleY);
-        }
+        setScale(scaleX, scaleY);
     }
 
     public void setPosition() {
-        imageView.setX(getX());
-        imageView.setY(getY());
+        imageView.setX(x);
+        imageView.setY(y);
     }
 
     public void setScale(double sx, double sy) {
@@ -67,48 +59,26 @@ public class GameObject {
         imageView.setFitHeight(height * sy);
     }
 
+    public void resetScale(){
+        this.scaleX = 1;
+        this.scaleY = 1;
+    }
 
     public void drawObject(GraphicsContext gc) {
-        if (gc == null) return;
-        gc.drawImage(image, x, y, width, height);
+        if (gc != null) gc.drawImage(image, x, y, width, height);
     }
 
-    public double getX() {
-        return x;
-    }
+    public double getX() { return x; }
+    public double getY() { return y; }
+    public double getWidth() { return width; }
+    public double getHeight() { return height; }
+    public Image getImage() { return image; }
 
-    public double getY() {
-        return y;
-    }
+    public Bounds getBounds() { return new BoundingBox(x, y, width, height); }
 
-    public double getWidth() {
-        return width;
-    }
-
-    public double getHeight() {
-        return height;
-    }
-
-    public Image getImage() {
-        return image;
-    }
-
-    // True bounding box based on x/y/width/height for reliable collision
-    public Bounds getBounds() {
-        return new javafx.geometry.BoundingBox(x, y, width, height);
-    }
-
-    public void setY(double v) {
-        y = v;
-    }
-
+    public void setY(double v) { y = v; }
     public void setX(double v) { x = v; }
 
-    public double getCenterX(){
-        return getX() + getWidth()/2;
-    }
-    public double getCenterY(){
-        return getY() + getHeight()/2;
-    }
-
+    public double getCenterX() { return x + width * 0.5; }
+    public double getCenterY() { return y + height * 0.5; }
 }

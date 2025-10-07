@@ -11,6 +11,7 @@ module com.example.demoarkanoid {
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
     requires javafx.graphics;
+    requires com.example.demoarkanoid;
 
 
     exports com.example.demoarkanoid4;
@@ -27,5 +28,9 @@ module com.example.demoarkanoid {
 
     exports com.example.demoarkanoid4.vector2D;
     opens com.example.demoarkanoid4.vector2D;
+    exports com.example.demoarkanoid4.core.brick;
+    opens com.example.demoarkanoid4.core.brick to javafx.fxml;
+    exports com.example.demoarkanoid4.utils;
+    opens com.example.demoarkanoid4.utils;
 
 }
