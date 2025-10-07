@@ -14,14 +14,15 @@ import java.util.List;
 
 public class GameManager extends Pane {
     private AnimationTimer timer;
-    private BrickManager brickManager;
-    private CollisionManager collisionManager;
-    private WallManager wallManager;
-    private Ball ball;
-    private PaddleManager paddleManager;
-    private List<Wall> walls;
-    private boolean inGame;
-    private GraphicsContext gc;
+
+    private BrickManager            brickManager;
+    private CollisionManager        collisionManager;
+    private WallManager             wallManager;
+    private PaddleManager           paddleManager;
+    private Ball                    ball;
+
+    private boolean                 inGame;
+    private GraphicsContext         gc;
 
 
     public GameManager() {
@@ -39,56 +40,35 @@ public class GameManager extends Pane {
     }
 
     private void gameInit() {
+        Paddle paddle = new Paddle();
         ball = new Ball();
+        paddleManager = new PaddleManager(paddle);
         brickManager = new BrickManager();
+        wallManager = new WallManager();
         collisionManager = new CollisionManager();
-        paddleManager = new PaddleManager();
         brickManager.generateLevel();
         wallManager.generateLevel();
         loop();
     }
 
-    public void update(double deltaTime) {
-        // 1) cập nhật paddle trước để ball (nếu ở trạng thái stuck) đặt đúng vị trí dựa vào paddle
-        paddleManager.update(deltaTime);
 
-        // 2) cập nhật bóng (nếu stuck thì nó sẽ follow paddle)
-        ball.update(deltaTime, paddleManager.getPaddle());
-
-        // 3) kiểm tra va chạm (dựa trên vị trí mới của bóng)
-        collisionManager.handleBallPaddleCollision(ball, paddleManager.getPaddle());
-        collisionManager.handleBallWallCollision(ball, walls);
-        collisionManager.handleBallBrickCollision(ball, brickManager.getBricks());
-
-        // 4) cập nhật bricks (hoặc logic powerups)
-        brickManager.update();
-    }
-
-
-    public void render() {
-        gc.clearRect(0,0, VARIABLES.WIDTH, VARIABLES.HEIGHT);
-        if(!inGame){
-            gameFinished();
-            return;
-        }
-        brickManager.render(gc);
-        ball.render(gc);
-        paddleManager.render(gc);
-    }
 
     private void loop() {
-        timer = new AnimationTimer() {
-            private long lastUpdate = System.nanoTime();
+        final double FPS = 60.0;
+        final double UPDATE_INTERVAL = 1e9 / FPS;
+        final long[] lastUpate = {System.nanoTime()};
 
+        timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                double deltaTime = (now - lastUpdate) / 1_000_000_000.0; // seconds
-                if (deltaTime > 0.05) deltaTime = 0.05; // clamp to avoid jumps
-                update(deltaTime);
+                while (now - lastUpate[0] >= UPDATE_INTERVAL) {
+                    update(1.0 / FPS);
+                    lastUpate[0] += UPDATE_INTERVAL;
+                }
                 render();
-                lastUpdate = now;
             }
         };
+
         timer.start();
     }
 
@@ -98,6 +78,30 @@ public class GameManager extends Pane {
         gc.fillText("GameOver",
                 (VARIABLES.WIDTH - "GameOver".length() * 10) / 2.0,
                 VARIABLES.HEIGHT / 2.0);
+    }
+
+    public void update(double deltaTime) {
+        // 1) cập nhật paddle trước để ball (nếu ở trạng thái stuck) đặt đúng vị trí dựa vào paddle
+        paddleManager.update(deltaTime);
+        ball.update(deltaTime, paddleManager.getPaddle());
+        collisionManager.handleBallPaddleCollision(ball, paddleManager.getPaddle());
+        collisionManager.handleBallWallCollision(ball, wallManager.getWalls());
+        collisionManager.handleBallBrickCollision(ball, brickManager.getBricks());
+        brickManager.update();
+
+    }
+
+
+    public void render() {
+        gc.clearRect(0,0, VARIABLES.WIDTH, VARIABLES.HEIGHT);
+        if(!inGame){
+            gameFinished();
+            return;
+        }
+        ball.render(gc);
+        brickManager.render(gc);
+        paddleManager.render(gc);
+        wallManager.render(gc);
     }
 
     private void stopGame() {
@@ -111,6 +115,7 @@ public class GameManager extends Pane {
     public Ball getBall() {
         return ball;
     }
+
     public Paddle getPaddle() {
         return paddleManager.getPaddle();
     }

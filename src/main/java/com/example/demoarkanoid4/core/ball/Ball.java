@@ -29,9 +29,12 @@ public class Ball extends GameObject implements BallLike {
         currentSpeed = baseSpeed;
     }
     public void update(double deltaTime, PaddleLike paddle) {
+        if (y >= VARIABLES.HEIGHT) {
+            resetState(paddle);
+        }
         if (isStuck()){
-            setX(paddle.getX() + paddle.getWidth() / 2.0 - getWidth() / 2.0);
-            setY(paddle.getY() - getHeight());
+            x = paddle.getX() + paddle.getWidth() / 2.0 - width / 2.0;
+            y = paddle.getY() - height;
             setPosition();
         }
         else {
@@ -40,28 +43,27 @@ public class Ball extends GameObject implements BallLike {
             setY(getY() + step.y);
         }
     }
-    public void release(PaddleLike paddle) {
-        if (isStuck()) {
-            launch();
-            // Set velocity based on where the ball is on the paddle
-            double angle = calculateAngle(paddle);
-            velocity = new Vector2D(Math.cos(angle), -Math.sin(angle));
-            // Ensure speed positive
-            if (currentSpeed <= 0) currentSpeed = baseSpeed;
-            System.out.printf("Ball.release(paddle): stuck=%b vel=(%.3f,%.3f) speed=%.3f%n",
-                    stuck, velocity.x, velocity.y, currentSpeed);
-        }
-    }
     // Overload: for compatibility with old code, but should pass paddle!
     public void release() {
-        launch();
+        if(isStuck()) {
+            launch();
+            velocity = new Vector2D(0, -1);
+            if (currentSpeed <= 0) currentSpeed = baseSpeed;
+        }
+    }
+
+    public void resetState(PaddleLike paddle) {
+        stick();
+        x = paddle.getX() + paddle.getWidth() / 2.0 - width / 2.0;
+        y = paddle.getY() - height;
+        setPosition();
         velocity = new Vector2D(0, -1);
-        if (currentSpeed <= 0) currentSpeed = baseSpeed;
+        //activeEffectList.clear();
     }
 
     public double calculateHitRatio(PaddleLike paddle) {
         double paddleLeft = paddle.getX();
-        double ballCenterX = getX() + getWidth() / 2.0;
+        double ballCenterX = x + width / 2.0;
         return (ballCenterX - paddleLeft) / paddle.getWidth();
     }
 
@@ -82,14 +84,20 @@ public class Ball extends GameObject implements BallLike {
                 this.getWidth(), this.getHeight());
     }
 
-    public void setVelocity(Vector2D v) {
-        if (v == null || (v.x == 0 && v.y == 0)) {
-            velocity = new Vector2D(0, -1);
+    public void setVelocity(double x, double y) {
+        if (x == 0 && y == 0) {
+            velocity.x = 0;
+            velocity.y = 0;
         } else {
-            velocity = v.normalize();
+            velocity.x = x;
+            velocity.y = y;
+            velocity = velocity.normalize();
         }
     }
 
+    public double getRadius(){
+        return getHeight()/2;
+    }
     public void stick() { stuck = true; }
     public void launch() { stuck = false;}
     public boolean isStuck() {return stuck; }

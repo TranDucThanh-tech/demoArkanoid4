@@ -1,6 +1,7 @@
 package com.example.demoarkanoid4.core;
 
 import javafx.geometry.Bounds;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.canvas.GraphicsContext;
@@ -16,6 +17,8 @@ public class GameObject {
     protected ImageView imageView;
     private double scaleX;
     private double scaleY;
+    private final Rectangle2D bounds = new Rectangle2D(x, y, width, height);
+
 
     public GameObject(String imagePath, double startX, double startY) {
         setImagePath(imagePath);
@@ -100,4 +103,12 @@ public class GameObject {
     }
 
     public void setX(double v) { x = v; }
+
+    public double getCenterX(){
+        return getX() + getWidth()/2;
+    }
+    public double getCenterY(){
+        return getY() + getHeight()/2;
+    }
+
 }

@@ -15,21 +15,21 @@ public class Paddle extends GameObject implements PaddleLike{
     }
 
     public void update(double deltaTime) {
-        setX(getX() + direction * speed * deltaTime);
+        x += direction * speed * deltaTime;
 
         // Clamp inside screen
         if (getX() < VARIABLES.HEIGHT_OF_WALLS){
-            setX(VARIABLES.HEIGHT_OF_WALLS);
+            x = VARIABLES.HEIGHT_OF_WALLS;
         }
         if (getX() > VARIABLES.WIDTH - getWidth() - VARIABLES.WIDTH_OF_WALLS) {
-            setX(VARIABLES.WIDTH - getWidth() - VARIABLES.WIDTH_OF_WALLS);
+            x = VARIABLES.WIDTH - width- VARIABLES.WIDTH_OF_WALLS;
         }
         setPosition();
     }
 
     public void resetState() {
-        setX(VARIABLES.INIT_PADDLE_X);
-        setY(VARIABLES.INIT_PADDLE_Y);
+        x = VARIABLES.INIT_PADDLE_X;
+        y = VARIABLES.INIT_PADDLE_Y;
         setPosition();
     }
 

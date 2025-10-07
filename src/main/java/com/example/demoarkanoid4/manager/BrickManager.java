@@ -16,8 +16,8 @@ public class BrickManager {
         for (int i = 0; i < VARIABLES.N_OF_BRICKS; i++){
             int row = i / VARIABLES.BRICKS_PER_ROW;
             int col = i % VARIABLES.BRICKS_PER_ROW;
-            int x = VARIABLES.FIRST_X_OF_BRICKS + col * (VARIABLES.WIDTH_OF_BRICKS + VARIABLES.MAXHEALTH_OF_BRICKS);
-            int y = VARIABLES.FIRST_Y_OF_BRICKS + row * (VARIABLES.HEIGHT_OF_BRICKS + VARIABLES.MAXHEALTH_OF_BRICKS);
+            int x = VARIABLES.FIRST_X_OF_BRICKS + col * (VARIABLES.WIDTH_OF_BRICKS + VARIABLES.PADDING_X);
+            int y = VARIABLES.FIRST_Y_OF_BRICKS + row * (VARIABLES.HEIGHT_OF_BRICKS + VARIABLES.PADDING_Y);
             bricks.add(new Brick(x, y));
         }
     }

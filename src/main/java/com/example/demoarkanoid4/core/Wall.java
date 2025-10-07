@@ -18,6 +18,7 @@ public class Wall extends GameObject{
     public void render(GraphicsContext gc){
         gc.drawImage(getImage(), getX(), getY(), getWidth(), getHeight());
     }
+
     public Side getSide() {
         return side;
     }
