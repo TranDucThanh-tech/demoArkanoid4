@@ -69,33 +69,35 @@ public class CollisionManager {
 
 
     public void handleBallBrickCollision(BallManager balls, BrickManager bricks, PowerUpManager powerUpManager) {
-        for (Ball ball : balls.getBalls()) {  // lặp qua tất cả bóng
+        for (Ball ball : balls.getBalls()) {
             for (Brick brick : bricks.getBricks()) {
                 if (brick.isDestroyed()) continue;
 
                 Collision c = buildCollision(ball, brick);
                 if (c != null) {
                     brick.takeDamage(ball);
-                    //SoundManager.getInstance().playSound("brick_hit");
 
-                    boolean ballFromSide = c.getOverlapX() < c.getOverlapY();
-                    Vector2D v = ball.getVelocity();
-
-                    if (ballFromSide) {
-                        ball.setVelocity(-v.x, v.y);
-                    } else {
-                        ball.setVelocity(v.x, -v.y);
+                    if (!ball.isPiercing()) { // chỉ bật lại nếu không phải bóng xuyên
+                        boolean ballFromSide = c.getOverlapX() < c.getOverlapY();
+                        Vector2D v = ball.getVelocity();
+                        if (ballFromSide) {
+                            ball.setVelocity(-v.x, v.y);
+                        } else {
+                            ball.setVelocity(v.x, -v.y);
+                        }
                     }
 
                     if (brick.isDestroyed()) {
                         powerUpManager.trySpawnPowerUp(brick);
                     }
 
-                    break; // mỗi bóng chỉ va chạm 1 brick mỗi frame
+                    // nếu bóng xuyên thì không break (để phá tiếp)
+                    if (!ball.isPiercing()) break;
                 }
             }
         }
     }
+
 
 
     public void handlePaddlePowerUpCollision(PowerUpManager powerUps, PaddleManager paddle, EffectManager activeEffect, BallManager balls) {

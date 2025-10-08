@@ -18,24 +18,18 @@ public class MultiBall implements Effect {
 
     @Override
     public void apply(BallManager ballManager, PaddleManager paddle) {
-        List<Ball> newBalls = new ArrayList<>();
+        List<Ball> balls = ballManager.getBalls();
+        int currentSize = balls.size();
 
-        // Nhân đôi tất cả bóng hiện tại
-        for (Ball original : ballManager.getBalls()) {
-            if (newBalls.size() > VARIABLES.MAX_BALL) return;
-            Ball clone = new Ball(original); // constructor sao chép (bạn cần có sẵn trong Ball)
+        // Nhân đôi nhưng không vượt quá MAX_BALL
+        int limit = Math.min(currentSize, VARIABLES.MAX_BALL - currentSize);
 
-            // chỉnh hướng ngẫu nhiên nhẹ để các bóng không bay trùng
-            clone.setVelocity(
-                    original.getVelocity().x * (Math.random() < 0.5 ? 1 : -1),
-                    original.getVelocity().y
-            );
-
-            newBalls.add(clone);
+        for (int i = 0; i < limit; i++) {
+            Ball clone = new Ball(balls.get(i));
+            balls.add(clone);
         }
-
-        ballManager.getBalls().addAll(newBalls);
     }
+
 
     @Override
     public void revert(BallManager ballManager, PaddleManager paddle) {

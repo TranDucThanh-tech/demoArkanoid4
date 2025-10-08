@@ -7,58 +7,71 @@ import com.example.demoarkanoid4.core.paddle.PaddleLike;
 import javafx.scene.canvas.GraphicsContext;
 
 public class Ball extends GameObject implements BallLike {
+
+    public enum CollisionMode {
+        NORMAL,     // Bật lại khi chạm gạch
+        PIERCING    // Xuyên gạch (dùng cho hiệu ứng Stronger)
+    }
+
     private final double baseSpeed;
     private double currentSpeed;
     private boolean stuck;
     private Vector2D velocity;
     private int strong;
+    private CollisionMode collisionMode;
 
+    // ==================== CONSTRUCTOR ==================== //
     public Ball() {
         super(VARIABLES.IMAGE_OF_BALL, VARIABLES.INIT_BALL_X, VARIABLES.INIT_BALL_Y);
         this.baseSpeed = VARIABLES.SPEED_OF_BALL;
         this.currentSpeed = VARIABLES.SPEED_OF_BALL;
         this.stuck = true;
-        this.velocity = new Vector2D(0, -1); // Upwards
+        this.velocity = new Vector2D(0, -1); // hướng lên trên
         this.strong = VARIABLES.STRONG_OF_BALL;
+        this.collisionMode = CollisionMode.NORMAL;
     }
-    public Ball(Ball original){
-        super(VARIABLES.IMAGE_OF_BALL, VARIABLES.INIT_BALL_X, VARIABLES.INIT_BALL_Y);
+
+    /** Constructor sao chép (cho MultiBall) */
+    public Ball(Ball original) {
+        super(VARIABLES.IMAGE_OF_BALL, VARIABLES.INIT_BALL_X, VARIABLES.INIT_BALL_Y - 25);
         this.baseSpeed = VARIABLES.SPEED_OF_BALL;
         this.currentSpeed = original.getSpeed();
         this.stuck = false;
-        this.velocity = new Vector2D(original.getVelocity().x, original.getVelocity().y);
+        this.velocity = new Vector2D(original.getVelocity().x, -1);
         this.strong = original.getStrong();
+        this.collisionMode = original.getCollisionMode();
     }
 
+    // ==================== UPDATE ==================== //
     public void update(double deltaTime, PaddleLike paddle) {
-        if (isStuck()){
-            if (stuck) {
-                double targetX = paddle.getX() + paddle.getWidth() / 2.0 - getWidth() / 2.0;
-                double targetY = paddle.getY() - getHeight();
+        if (stuck) {
+            // Bóng dính paddle
+            double targetX = paddle.getX() + paddle.getWidth() / 2.0 - getWidth() / 2.0;
+            double targetY = paddle.getY() - getHeight();
 
-                double lerpFactor = 0.1; // càng nhỏ thì bóng càng "nặng"
-                x += (targetX - x) * lerpFactor;
-                y += (targetY - y) * lerpFactor;
+            double lerpFactor = 0.1; // càng nhỏ thì bóng "nặng"
+            x += (targetX - x) * lerpFactor;
+            y += (targetY - y) * lerpFactor;
 
-                // Giới hạn bóng trong phạm vi paddle
-                double minX = paddle.getX();
-                double maxX = paddle.getX() + paddle.getWidth() - getWidth();
-                if (x < minX) x = minX;
-                if (x > maxX) x = maxX;
+            // Giới hạn trong phạm vi paddle
+            double minX = paddle.getX();
+            double maxX = paddle.getX() + paddle.getWidth() - getWidth();
+            if (x < minX) x = minX;
+            if (x > maxX) x = maxX;
 
-                setPosition();
-            }
-
-        }
-        else {
+            setPosition();
+        } else {
+            // Di chuyển tự do
             Vector2D step = velocity.normalize().multiply(currentSpeed * deltaTime);
-            setX(getX() + step.x);
-            setY(getY() + step.y);
+            x += step.x;
+            y += step.y;
+            setPosition();
         }
     }
-    // Overload: for compatibility with old code, but should pass paddle!
+
+    // ==================== TRẠNG THÁI BÓNG ==================== //
     public void release() {
-        if(isStuck()) {
+        if (stuck) {
             launch();
             velocity = new Vector2D(0, -1);
             if (currentSpeed <= 0) currentSpeed = baseSpeed;
@@ -69,49 +82,66 @@ public class Ball extends GameObject implements BallLike {
         stick();
         x = paddle.getX() + paddle.getWidth() / 2.0 - width / 2.0;
         y = paddle.getY() - height;
-        setPosition();
         velocity = new Vector2D(0, -1);
-        //activeEffectList.clear();
+        collisionMode = CollisionMode.NORMAL;
+        setPosition();
     }
 
+    // ==================== GÓC PHẢN XẠ ==================== //
     public double calculateHitRatio(PaddleLike paddle) {
         double paddleLeft = paddle.getX();
         double ballCenterX = x + width / 2.0;
         return (ballCenterX - paddleLeft) / paddle.getWidth();
     }
 
-    public double calculateAngle(PaddleLike paddle){
-        // Returns angle in radians between 30° (right edge) and 150° (left edge)
-        // 0 = left, 1 = right
+    public double calculateAngle(PaddleLike paddle) {
+        // góc từ 30° (bên phải) đến 150° (bên trái)
         double ratio = calculateHitRatio(paddle);
         return Math.toRadians(150 * (1 - ratio) + 30 * ratio);
     }
 
     public void adjustPositionAbovePaddle(PaddleLike paddle) {
         y = paddle.getY() - height;
-        this.setPosition();
+        setPosition();
     }
 
+    // ==================== GET/SET ==================== //
     public void setVelocity(double x, double y) {
         if (x == 0 && y == 0) {
-            velocity.x = 0;
-            velocity.y = 0;
+            velocity = new Vector2D(0, 0);
         } else {
-            velocity.x = x;
-            velocity.y = y;
-            velocity = velocity.normalize();
+            velocity = new Vector2D(x, y).normalize();
         }
     }
 
-    public double getRadius(){
-        return getHeight()/2;
-    }
-    public void stick() { stuck = true; }
-    public void launch() { stuck = false;}
-    public boolean isStuck() {return stuck; }
+    public Vector2D getVelocity() { return velocity; }
     public double getSpeed() { return currentSpeed; }
     public void setSpeed(double speed) { this.currentSpeed = speed; }
-    public Vector2D getVelocity() { return velocity; }
-    public int getStrong() {return strong; }
-    public void setStrong(int strong) {this.strong = strong; }
+    public double getRadius() { return getHeight() / 2.0; }
+
+    public void stick() { stuck = true; }
+    public void launch() { stuck = false; }
+    public boolean isStuck() { return stuck; }
+
+    public int getStrong() { return strong; }
+    public void setStrong(int strong) { this.strong = strong; }
+
+    // ==================== COLLISION MODE ==================== //
+    public void setCollisionMode(CollisionMode mode) {
+        this.collisionMode = mode;
+    }
+
+    public CollisionMode getCollisionMode() {
+        return collisionMode;
+    }
+
+    public boolean isPiercing() {
+        return collisionMode == CollisionMode.PIERCING;
+    }
+
+    // ==================== DRAW ==================== //
+    @Override
+    public void render(GraphicsContext gc) {
+        gc.drawImage(image, x, y, width, height);
+    }
 }

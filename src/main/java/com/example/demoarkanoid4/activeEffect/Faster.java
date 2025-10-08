@@ -16,14 +16,16 @@ public class Faster implements Effect {
     @Override
     public void apply(BallManager ballManager, PaddleManager paddle) {
         for (Ball ball : ballManager.getBalls()) {
-            ball.setSpeed(ball.getSpeed() * VARIABLES.ACCELERATED_SPEED_MULTIPLIER);
+            // tăng tốc dựa trên vận tốc gốc
+            ball.setSpeed(VARIABLES.SPEED_OF_BALL * VARIABLES.ACCELERATED_SPEED_MULTIPLIER);
         }
     }
 
     @Override
     public void revert(BallManager ballManager, PaddleManager paddle) {
         for (Ball ball : ballManager.getBalls()) {
-            ball.setSpeed(ball.getSpeed() / VARIABLES.ACCELERATED_SPEED_MULTIPLIER);
+            // khôi phục vận tốc gốc
+            ball.setSpeed(VARIABLES.SPEED_OF_BALL);
         }
     }
 }
