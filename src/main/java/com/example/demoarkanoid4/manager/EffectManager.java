@@ -49,9 +49,9 @@ public class EffectManager {
     private Effect createEffect(char type) {
         switch (type) {
             case VARIABLES.FASTER: return new Faster();
-            // case VARIABLES.BIGGERPADDLE: return new BiggerPaddle();
-            // case VARIABLES.MULTIBALL: return new MultiBall();
-            // case VARIABLES.STRONGER: return new Stronger();
+            case VARIABLES.BIGGERPADDLE: return new BiggerPaddle();
+            case VARIABLES.MULTIBALL: return new MultiBall();
+            case VARIABLES.STRONGER: return new Stronger();
             default: return null;
         }
     }

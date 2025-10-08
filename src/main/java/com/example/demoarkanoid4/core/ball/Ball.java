@@ -11,7 +11,7 @@ public class Ball extends GameObject implements BallLike {
     private double currentSpeed;
     private boolean stuck;
     private Vector2D velocity;
-    private boolean accelerated;
+    private int strong;
 
     public Ball() {
         super(VARIABLES.IMAGE_OF_BALL, VARIABLES.INIT_BALL_X, VARIABLES.INIT_BALL_Y);
@@ -19,19 +19,18 @@ public class Ball extends GameObject implements BallLike {
         this.currentSpeed = VARIABLES.SPEED_OF_BALL;
         this.stuck = true;
         this.velocity = new Vector2D(0, -1); // Upwards
+        this.strong = VARIABLES.STRONG_OF_BALL;
     }
-    public void applyAcceleration(double multiplier) {
-        accelerated = true;
-        currentSpeed = baseSpeed * multiplier;
+    public Ball(Ball original){
+        super(VARIABLES.IMAGE_OF_BALL, VARIABLES.INIT_BALL_X, VARIABLES.INIT_BALL_Y);
+        this.baseSpeed = VARIABLES.SPEED_OF_BALL;
+        this.currentSpeed = original.getSpeed();
+        this.stuck = false;
+        this.velocity = new Vector2D(original.getVelocity().x, original.getVelocity().y);
+        this.strong = original.getStrong();
     }
-    public void resetSpeed() {
-        accelerated = false;
-        currentSpeed = baseSpeed;
-    }
+
     public void update(double deltaTime, PaddleLike paddle) {
-        if (y >= VARIABLES.HEIGHT) {
-            resetState(paddle);
-        }
         if (isStuck()){
             if (stuck) {
                 double targetX = paddle.getX() + paddle.getWidth() / 2.0 - getWidth() / 2.0;
@@ -113,5 +112,6 @@ public class Ball extends GameObject implements BallLike {
     public double getSpeed() { return currentSpeed; }
     public void setSpeed(double speed) { this.currentSpeed = speed; }
     public Vector2D getVelocity() { return velocity; }
-
+    public int getStrong() {return strong; }
+    public void setStrong(int strong) {this.strong = strong; }
 }

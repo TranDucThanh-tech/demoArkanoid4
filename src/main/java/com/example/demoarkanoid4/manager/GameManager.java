@@ -49,6 +49,7 @@ public class GameManager extends Pane {
         wallManager = new WallManager();
         collisionManager = new CollisionManager();
         powerUpManager = new PowerUpManager();
+        effectManager = new EffectManager();
         brickManager.generateLevel();
         wallManager.generateLevel();
         loop();

@@ -27,7 +27,7 @@ public class PowerUpManager {
     public void trySpawnPowerUp(BrickLike brick) {
         if (GameRandom.nextDouble() < VARIABLES.DROP_RATE) {
             char type = getRandomType();
-            PowerUp powerUp = new PowerUp('0', VARIABLES.IMAGE_OF_POWERUP[type - '0']); ////
+            PowerUp powerUp = new PowerUp(type, VARIABLES.IMAGE_OF_POWERUP[type - '0']);
             powerUp.dropFrom(brick);
             powerUps.add(powerUp);
         }

@@ -2,6 +2,7 @@ package com.example.demoarkanoid4.core.brick;
 
 import com.example.demoarkanoid4.VARIABLES;
 import com.example.demoarkanoid4.core.GameObject;
+import com.example.demoarkanoid4.core.ball.BallLike;
 import com.example.demoarkanoid4.utils.GameRandom;
 import javafx.scene.image.Image;
 import java.util.ArrayList;
@@ -49,10 +50,10 @@ public class Brick extends GameObject implements BrickLike{
         return BRICK_TEXTURES.get(index);
     }
 
-    public void takeDamage() {
+    public void takeDamage(BallLike ball) {
         if (destroyed) return;
 
-        health--;
+        health -= ball.getStrong();
         if (health <= 0) {
             destroy();
         } else {

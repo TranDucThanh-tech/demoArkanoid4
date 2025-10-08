@@ -8,4 +8,5 @@ public interface BallLike {
     double getWidth();
     double getHeight();
     Bounds getBounds();
+    int getStrong();
 }

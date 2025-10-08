@@ -1,9 +1,11 @@
 package com.example.demoarkanoid4.manager;
+import com.example.demoarkanoid4.VARIABLES;
 import com.example.demoarkanoid4.core.ball.Ball;
 import com.example.demoarkanoid4.core.paddle.PaddleLike;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class BallManager {
@@ -11,17 +13,29 @@ public class BallManager {
 
     public BallManager() {
         // Khởi tạo 10 quả bóng mẫu ở vị trí cố định, có thể điều chỉnh vị trí nếu muốn
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 1; i++) {
             Ball ball = new Ball();
             balls.add(ball);
         }
     }
 
     public void update(double deltaTime, PaddleLike paddle) {
-        for (Ball ball : balls) {
+        Iterator<Ball> iterator = balls.iterator();
+        while (iterator.hasNext()) {
+            Ball ball = iterator.next();
             ball.update(deltaTime, paddle);
+
+            if (ball.getY() > VARIABLES.HEIGHT) {
+                iterator.remove(); // xóa an toàn
+            }
+        }
+
+        if (balls.isEmpty()) {
+            Ball newBall = new Ball();
+            balls.add(newBall);
         }
     }
+
 
     public void addBall(Ball ball) {
         balls.add(ball);

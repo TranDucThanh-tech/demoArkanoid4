@@ -75,7 +75,7 @@ public class CollisionManager {
 
                 Collision c = buildCollision(ball, brick);
                 if (c != null) {
-                    brick.takeDamage();
+                    brick.takeDamage(ball);
                     //SoundManager.getInstance().playSound("brick_hit");
 
                     boolean ballFromSide = c.getOverlapX() < c.getOverlapY();

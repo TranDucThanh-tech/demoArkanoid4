@@ -12,7 +12,6 @@ public class GameObject {
     protected double x, y, width, height;
     protected Image image;
     protected ImageView imageView;
-    private double scaleX = 1, scaleY = 1;
 
     public GameObject(String imagePath, double startX, double startY) {
         setImagePath(imagePath);
@@ -44,7 +43,6 @@ public class GameObject {
         }
         this.width = image.getWidth();
         this.height = image.getHeight();
-        setScale(scaleX, scaleY);
     }
 
     public void setPosition() {
@@ -52,22 +50,12 @@ public class GameObject {
         imageView.setY(y);
     }
 
-    public void setScale(double sx, double sy) {
-        this.scaleX = sx;
-        this.scaleY = sy;
-        imageView.setFitWidth(width * sx);
-        imageView.setFitHeight(height * sy);
-    }
-
-    public void resetScale(){
-        this.scaleX = 1;
-        this.scaleY = 1;
-    }
 
     public void render(GraphicsContext gc) {
-        if (gc != null) gc.drawImage(image, x, y, width, height);
+        if (gc != null) {
+            gc.drawImage(image, x, y, width, height);
+        }
     }
-
 
     public double getX() { return x; }
     public double getY() { return y; }
@@ -79,5 +67,4 @@ public class GameObject {
 
     public void setY(double v) { y = v; }
     public void setX(double v) { x = v; }
-
 }

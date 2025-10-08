@@ -15,7 +15,8 @@ public final class VARIABLES {
     public static final int INIT_PADDLE_X = WIDTH / 2 - 50;
     public static final int INIT_PADDLE_Y = HEIGHT - 30;
     public static final float SPEED_OF_PADDLE = 500.0F;
-
+    public static final double WIDTH_OF_PADDLE = 32;
+    public static final double HEIGHT_OF_PADDLE = 9;
     // Walls
     public static final int WIDTH_OF_WALLS = 15;
     public static final int HEIGHT_OF_WALLS = 16;
@@ -28,6 +29,8 @@ public final class VARIABLES {
     public static final int INIT_BALL_Y = HEIGHT - 60;
     public static final float SPEED_OF_BALL = 400.0F;
     public static final float ACCELERATED_SPEED_MULTIPLIER = 2.0F;
+    public static final int MAX_BALL = 15;
+    public static final int STRONG_OF_BALL = 1;
     // Bricks
     public static final int N_OF_BRICKS = 150;
     public static final int BRICKS_PER_ROW = 15;
@@ -59,5 +62,6 @@ public final class VARIABLES {
     public static final char MULTIBALL = '3';
     public static final double DROP_RATE = 1; // 25%
     public static float SPEED_OF_POWERUP = 200F;
+    public static int BUFF = 5;
 
 }

@@ -7,6 +7,8 @@ import javafx.scene.canvas.GraphicsContext;
 public class Paddle extends GameObject implements PaddleLike{
     private int direction;          // -1 = left, 0 = stop, 1 = right
     private double speed;
+    private final double baseWidth = VARIABLES.WIDTH_OF_PADDLE;
+    private final double baseHeight = VARIABLES.HEIGHT_OF_PADDLE;
 
     public Paddle() {
         super(VARIABLES.IMAGE_OF_PADDLE, VARIABLES.INIT_PADDLE_X, VARIABLES.INIT_PADDLE_Y);
@@ -36,9 +38,17 @@ public class Paddle extends GameObject implements PaddleLike{
     public void setDirection(int dir) {
         this.direction = dir;
     }
-    public void render(GraphicsContext gc) {
-        gc.drawImage(this.getImage(), this.getX(), this.getY(),
-                this.getWidth(), this.getHeight());
+
+
+    public void setScale(double sx, double sy) {
+        double newWidth = baseWidth * sx;
+        double newHeight = baseHeight * sy;
+        this.width = newWidth;
+        this.height = newHeight;
     }
-    // Optionally override getBounds() if you want rounded paddle, else use parent's
+    @Override
+    public void render(GraphicsContext gc) {
+        gc.drawImage(image, x, y, width, height);
+    }
+
 }
