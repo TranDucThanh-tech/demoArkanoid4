@@ -6,7 +6,7 @@ import com.example.demoarkanoid4.manager.PaddleManager;
 
 public class ActiveEffect {
     private final Effect effect;
-    private final long expireAt; // mốc thời gian hết hạn (ms)
+    private long expireAt; // mốc thời gian hết hạn (ms)
 
     public ActiveEffect(Effect effect, double durationSeconds) {
         this.effect = effect;
@@ -30,6 +30,12 @@ public class ActiveEffect {
     }
     public Effect getEffect() {
         return effect;
+    }
+
+    public void refreshDuration(double durationSeconds) {
+        // cập nhật lại expireAt từ thời điểm hiện tại
+        long now = System.currentTimeMillis();
+        this.expireAt = now + (long)(durationSeconds * 1000);
     }
 }
 

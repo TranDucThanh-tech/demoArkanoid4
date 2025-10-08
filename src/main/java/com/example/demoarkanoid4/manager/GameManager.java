@@ -23,6 +23,7 @@ public class GameManager extends Pane {
     private BallManager             ballManager;
     private EffectManager           effectManager;
 
+
     private boolean                 inGame;
     private GraphicsContext         gc;
 
@@ -60,21 +61,25 @@ public class GameManager extends Pane {
     private void loop() {
         final double FPS = 60.0;
         final double UPDATE_INTERVAL = 1e9 / FPS;
-        final long[] lastUpate = {System.nanoTime()};
+        final long[] lastUpdate = { System.nanoTime() };
+        double[] accumulator = { 0 };
 
         timer = new AnimationTimer() {
             @Override
             public void handle(long now) {
-                while (now - lastUpate[0] >= UPDATE_INTERVAL) {
+                accumulator[0] += now - lastUpdate[0];
+                lastUpdate[0] = now;
+
+                while (accumulator[0] >= UPDATE_INTERVAL) {
                     update(1.0 / FPS);
-                    lastUpate[0] += UPDATE_INTERVAL;
+                    accumulator[0] -= UPDATE_INTERVAL;
                 }
                 render();
             }
         };
-
         timer.start();
     }
+
 
     private void gameFinished() {
         gc.setFill(Color.BLACK);

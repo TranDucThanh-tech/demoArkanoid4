@@ -15,7 +15,7 @@ public class EffectManager {
         // Nếu đã có hiệu ứng cùng loại thì chỉ gia hạn thời gian
         for (ActiveEffect e : activeEffects) {
             if (e.getType() == type) {
-                refreshEffect(e, type, ballManager, paddle);
+                e.refreshDuration(6.0);
                 return;
             }
         }
@@ -23,7 +23,7 @@ public class EffectManager {
         // Tạo và kích hoạt hiệu ứng mới
         Effect newEffect = createEffect(type);
         if (newEffect != null) {
-            newEffect.apply(ballManager, paddle);  // ✅ kích hoạt
+            newEffect.apply(ballManager, paddle);  //  kích hoạt
             ActiveEffect active = new ActiveEffect(newEffect, 6.0);
             activeEffects.add(active);
         }
@@ -34,7 +34,7 @@ public class EffectManager {
         while (it.hasNext()) {
             ActiveEffect e = it.next();
             if (e.isExpired()) {
-                e.getEffect().revert(balls, paddle); // ✅ hủy tác dụng
+                e.getEffect().revert(balls, paddle); //  hủy tác dụng
                 it.remove();
             }
         }

@@ -34,7 +34,7 @@ public final class VARIABLES {
     // Bricks
     public static final int N_OF_BRICKS = 150;
     public static final int BRICKS_PER_ROW = 15;
-    public static final int MAXHEALTH_OF_BRICKS = 5;
+    public static final int MAXHEALTH_OF_BRICKS = 2;
     public static final int WIDTH_OF_BRICKS = 32;
     public static final int HEIGHT_OF_BRICKS = 16;
     public static final int PADDING_X = 6;
@@ -60,7 +60,7 @@ public final class VARIABLES {
     public static final char BIGGERPADDLE = '1';
     public static final char STRONGER = '2';
     public static final char MULTIBALL = '3';
-    public static final double DROP_RATE = 0.5; // 25%
+    public static final double DROP_RATE = 1; // 25%
     public static float SPEED_OF_POWERUP = 200F;
     public static int BUFF = 5;
 

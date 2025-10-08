@@ -10,18 +10,20 @@ import java.util.List;
 
 public class PowerUpManager {
     private final List<PowerUp> powerUps = new ArrayList<>();
+    private final List<PowerUp> inactivePowerUps = new ArrayList<>();
 
     public void update(double deltaTime) {
         for (PowerUp powerUp : powerUps){
             powerUp.update(deltaTime);
         }
+        powerUps.removeIf(p -> !p.isVisible());
+
     }
 
     public void render(GraphicsContext gc){
         for (PowerUp p : powerUps){
             p.render(gc);
         }
-        powerUps.removeIf(p -> !p.isVisible());
     }
 
     public void trySpawnPowerUp(BrickLike brick) {

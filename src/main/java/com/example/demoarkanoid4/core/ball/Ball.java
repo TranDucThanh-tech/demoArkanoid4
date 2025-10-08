@@ -13,7 +13,7 @@ public class Ball extends GameObject implements BallLike {
         PIERCING    // Xuyên gạch (dùng cho hiệu ứng Stronger)
     }
 
-    private final double baseSpeed;
+    private final double baseSpeed = VARIABLES.SPEED_OF_BALL;
     private double currentSpeed;
     private boolean stuck;
     private Vector2D velocity;
@@ -23,7 +23,6 @@ public class Ball extends GameObject implements BallLike {
     // ==================== CONSTRUCTOR ==================== //
     public Ball() {
         super(VARIABLES.IMAGE_OF_BALL, VARIABLES.INIT_BALL_X, VARIABLES.INIT_BALL_Y);
-        this.baseSpeed = VARIABLES.SPEED_OF_BALL;
         this.currentSpeed = VARIABLES.SPEED_OF_BALL;
         this.stuck = true;
         this.velocity = new Vector2D(0, -1); // hướng lên trên
@@ -32,9 +31,8 @@ public class Ball extends GameObject implements BallLike {
     }
 
     /** Constructor sao chép (cho MultiBall) */
-    public Ball(Ball original) {
-        super(VARIABLES.IMAGE_OF_BALL, VARIABLES.INIT_BALL_X, VARIABLES.INIT_BALL_Y - 25);
-        this.baseSpeed = VARIABLES.SPEED_OF_BALL;
+    public void copyState(Ball original) {
+        this.image = original.getImage();
         this.currentSpeed = original.getSpeed();
         this.stuck = false;
         this.velocity = new Vector2D(original.getVelocity().x, -1);
@@ -78,10 +76,22 @@ public class Ball extends GameObject implements BallLike {
         }
     }
 
+
     public void resetState(PaddleLike paddle) {
         stick();
-        x = paddle.getX() + paddle.getWidth() / 2.0 - width / 2.0;
-        y = paddle.getY() - height;
+        double targetX = paddle.getX() + paddle.getWidth() / 2.0 - getWidth() / 2.0;
+        double targetY = paddle.getY() - getHeight();
+
+        double lerpFactor = 0.1; // càng nhỏ thì bóng "nặng"
+        x += (targetX - x) * lerpFactor;
+        y += (targetY - y) * lerpFactor;
+
+        // Giới hạn trong phạm vi paddle
+        double minX = paddle.getX();
+        double maxX = paddle.getX() + paddle.getWidth() - getWidth();
+        if (x < minX) x = minX;
+        if (x > maxX) x = maxX;
+
         velocity = new Vector2D(0, -1);
         collisionMode = CollisionMode.NORMAL;
         setPosition();

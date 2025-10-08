@@ -28,16 +28,13 @@ public class BrickManager {
             Brick brick = iterator.next();
             if (brick.isDestroyed()) {
                 iterator.remove();
-                // TODO: báo cho PowerUpManager hoặc ScoreManager
             }
         }
     }
 
     public void render(GraphicsContext gc) {
         for (Brick b : bricks) {
-            if (!b.isDestroyed()) {
-                b.render(gc);
-            }
+            b.render(gc);
         }
     }
 
