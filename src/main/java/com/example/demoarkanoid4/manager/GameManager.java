@@ -19,7 +19,9 @@ public class GameManager extends Pane {
     private CollisionManager        collisionManager;
     private WallManager             wallManager;
     private PaddleManager           paddleManager;
-    private Ball                    ball;
+    private PowerUpManager          powerUpManager;
+    private BallManager             ballManager;
+    private EffectManager           effectManager;
 
     private boolean                 inGame;
     private GraphicsContext         gc;
@@ -41,11 +43,12 @@ public class GameManager extends Pane {
 
     private void gameInit() {
         Paddle paddle = new Paddle();
-        ball = new Ball();
+        ballManager = new BallManager();
         paddleManager = new PaddleManager(paddle);
         brickManager = new BrickManager();
         wallManager = new WallManager();
         collisionManager = new CollisionManager();
+        powerUpManager = new PowerUpManager();
         brickManager.generateLevel();
         wallManager.generateLevel();
         loop();
@@ -83,11 +86,14 @@ public class GameManager extends Pane {
     public void update(double deltaTime) {
         // 1) cập nhật paddle trước để ball (nếu ở trạng thái stuck) đặt đúng vị trí dựa vào paddle
         paddleManager.update(deltaTime);
-        ball.update(deltaTime, paddleManager.getPaddle());
-        collisionManager.handleBallPaddleCollision(ball, paddleManager.getPaddle());
-        collisionManager.handleBallWallCollision(ball, wallManager.getWalls());
-        collisionManager.handleBallBrickCollision(ball, brickManager.getBricks());
+        ballManager.update(deltaTime, paddleManager.getPaddle());
+        collisionManager.handleBallPaddleCollision(ballManager, paddleManager);
+        collisionManager.handleBallWallCollision(ballManager, wallManager);
+        collisionManager.handleBallBrickCollision(ballManager, brickManager, powerUpManager);
+        collisionManager.handlePaddlePowerUpCollision(powerUpManager, paddleManager, effectManager, ballManager);
         brickManager.update();
+        powerUpManager.update(deltaTime);
+        effectManager.update(ballManager, paddleManager);
 
     }
 
@@ -98,10 +104,11 @@ public class GameManager extends Pane {
             gameFinished();
             return;
         }
-        ball.render(gc);
+        ballManager.render(gc);
         brickManager.render(gc);
         paddleManager.render(gc);
         wallManager.render(gc);
+        powerUpManager.render(gc);
     }
 
     private void stopGame() {
@@ -112,11 +119,11 @@ public class GameManager extends Pane {
     }
 
     // --- Add these getter methods for Main and InputHandler ---
-    public Ball getBall() {
-        return ball;
+    public BallManager getBalls() {
+        return ballManager;
     }
 
-    public Paddle getPaddle() {
-        return paddleManager.getPaddle();
+    public PaddleManager getPaddle() {
+        return paddleManager;
     }
 }

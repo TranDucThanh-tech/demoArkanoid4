@@ -93,11 +93,6 @@ public class Ball extends GameObject implements BallLike {
         this.setPosition();
     }
 
-    public void render(GraphicsContext gc) {
-        gc.drawImage(this.getImage(), this.getX(), this.getY(),
-                this.getWidth(), this.getHeight());
-    }
-
     public void setVelocity(double x, double y) {
         if (x == 0 && y == 0) {
             velocity.x = 0;

@@ -15,7 +15,7 @@ public class PaddleManager {
     }
 
     public void render(GraphicsContext gc) {
-        paddle.drawObject(gc);
+        paddle.render(gc);
     }
 
     public Paddle getPaddle() {

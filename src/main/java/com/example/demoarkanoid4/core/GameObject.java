@@ -64,9 +64,10 @@ public class GameObject {
         this.scaleY = 1;
     }
 
-    public void drawObject(GraphicsContext gc) {
+    public void render(GraphicsContext gc) {
         if (gc != null) gc.drawImage(image, x, y, width, height);
     }
+
 
     public double getX() { return x; }
     public double getY() { return y; }
@@ -79,6 +80,4 @@ public class GameObject {
     public void setY(double v) { y = v; }
     public void setX(double v) { x = v; }
 
-    public double getCenterX() { return x + width * 0.5; }
-    public double getCenterY() { return y + height * 0.5; }
 }

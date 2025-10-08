@@ -9,6 +9,14 @@ import java.util.List;
 public class BallManager {
     private final List<Ball> balls = new ArrayList<>();
 
+    public BallManager() {
+        // Khởi tạo 10 quả bóng mẫu ở vị trí cố định, có thể điều chỉnh vị trí nếu muốn
+        for (int i = 0; i < 10; i++) {
+            Ball ball = new Ball();
+            balls.add(ball);
+        }
+    }
+
     public void update(double deltaTime, PaddleLike paddle) {
         for (Ball ball : balls) {
             ball.update(deltaTime, paddle);

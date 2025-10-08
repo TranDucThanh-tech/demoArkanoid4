@@ -14,7 +14,7 @@ public class Main extends Application {
             GameManager gameManager = new GameManager();
             Scene scene = new Scene(gameManager, VARIABLES.WIDTH, VARIABLES.HEIGHT);
 
-            InputHandler inputHandler = new InputHandler(gameManager.getPaddle(), gameManager.getBall());
+            InputHandler inputHandler = new InputHandler(gameManager.getPaddle(), gameManager.getBalls());
             inputHandler.input(scene);
 
             primaryStage.setTitle("Arkanoid Game");

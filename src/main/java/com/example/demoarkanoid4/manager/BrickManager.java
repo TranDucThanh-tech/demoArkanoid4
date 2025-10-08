@@ -36,7 +36,7 @@ public class BrickManager {
     public void render(GraphicsContext gc) {
         for (Brick b : bricks) {
             if (!b.isDestroyed()) {
-                gc.drawImage(b.getImage(), b.getX(), b.getY(), b.getWidth(), b.getHeight());
+                b.render(gc);
             }
         }
     }

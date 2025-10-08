@@ -2,9 +2,10 @@ package com.example.demoarkanoid4.core;
 
 import com.example.demoarkanoid4.VARIABLES;
 import com.example.demoarkanoid4.core.brick.BrickLike;
+import javafx.scene.canvas.GraphicsContext;
 
 public class PowerUp extends GameObject{
-    private final double speed = VARIABLES.SPEED_OF_PADDLE;
+    private final double speed = VARIABLES.SPEED_OF_POWERUP;
     private boolean visible;
     private char type;
 
@@ -30,6 +31,7 @@ public class PowerUp extends GameObject{
             }
         }
     }
+
     public boolean isVisible() {
         return visible;
     }
