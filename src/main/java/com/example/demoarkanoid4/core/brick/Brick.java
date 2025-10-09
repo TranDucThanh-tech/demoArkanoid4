@@ -12,8 +12,8 @@ import java.util.Random;
 
 public class Brick extends GameObject implements BrickLike{
 
-    private boolean destroyed;
-    private int health;
+    protected boolean destroyed;
+    protected int health;
 
     private static final int MAX_HEALTH = VARIABLES.MAXHEALTH_OF_BRICKS;
     private static final List<Image> BRICK_TEXTURES = new ArrayList<>(MAX_HEALTH);
@@ -38,6 +38,11 @@ public class Brick extends GameObject implements BrickLike{
     private Brick(int health, int x, int y) {
         super(getImageFromHealth(health), x, y);
         this.health = health;
+        this.destroyed = false;
+    }
+
+    protected Brick(Image image, int x, int y) {
+        super(image, x, y);
         this.destroyed = false;
     }
 

@@ -1,12 +1,14 @@
 package com.example.demoarkanoid4.utils;
 
 public class Vector2D {
-    public double x,y;
+    public double x, y;
+
     public Vector2D(double x, double y) {
         this.x = x;
         this.y = y;
     }
 
+    // ==================== TOÁN HỌC CƠ BẢN ==================== //
     public Vector2D add(Vector2D other) {
         return new Vector2D(x + other.x, y + other.y);
     }
@@ -25,23 +27,13 @@ public class Vector2D {
 
     public Vector2D normalize() {
         double len = length();
-        return len == 0 ? new Vector2D(0,0) : new Vector2D(x / len, y / len);
+        return len == 0 ? new Vector2D(0, 0) : new Vector2D(x / len, y / len);
     }
 
+    // ==================== PHẢN XẠ ==================== //
     /**
-     * A vector2D when collide with a surface -> tangent stays the same, the parallel to surface is flipped
-     * Parallel to surface (into the wall):
-     *      v1 = (v * n)n
-     * Along the wall:
-     *      v2 = v - v1
-     * => v = v1 + v2
-     *
-     * Reflection:
-     *      r = v2 - v1
-     *        = v - 2 * v1
-     *        = v - 2 * (v * n)n
-     * @param normal the surface vector to calculate the reflection
-     * @return a reflection vector2D
+     * Phản xạ vector với vector pháp tuyến.
+     * r = v - 2*(v·n)*n
      */
     public Vector2D reflect(Vector2D normal) {
         double dot = this.dot(normal);
@@ -49,5 +41,27 @@ public class Vector2D {
                 x - 2 * dot * normal.x,
                 y - 2 * dot * normal.y
         );
+    }
+
+    // ==================== GÓC & CHIỀU ==================== //
+    /** Lấy góc (radian) của vector so với trục X, tính từ trục X dương ngược chiều kim đồng hồ */
+    public double getAngle() {
+        return Math.atan2(y, x);
+    }
+
+    /** Đặt lại vector theo góc và độ dài (speed) */
+    public void setAngleAndLength(double angle, double length) {
+        this.x = Math.cos(angle) * length;
+        this.y = Math.sin(angle) * length;
+    }
+
+    /** Tạo bản sao */
+    public Vector2D copy() {
+        return new Vector2D(x, y);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("(%.2f, %.2f)", x, y);
     }
 }

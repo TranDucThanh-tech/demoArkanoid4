@@ -23,8 +23,8 @@ public class EffectManager {
         // Tạo và kích hoạt hiệu ứng mới
         Effect newEffect = createEffect(type);
         if (newEffect != null) {
-            newEffect.apply(ballManager, paddle);  //  kích hoạt
             ActiveEffect active = new ActiveEffect(newEffect, 6.0);
+            active.activate(ballManager, paddle);//  kích hoạt
             activeEffects.add(active);
         }
     }
@@ -34,16 +34,10 @@ public class EffectManager {
         while (it.hasNext()) {
             ActiveEffect e = it.next();
             if (e.isExpired()) {
-                e.getEffect().revert(balls, paddle); //  hủy tác dụng
+                e.deactivate(balls, paddle); //  hủy tác dụng
                 it.remove();
             }
         }
-    }
-
-    private void refreshEffect(ActiveEffect e, char type, BallManager ballManager, PaddleManager paddle) {
-        e.getEffect().revert(ballManager, paddle);  // hủy tác dụng cũ
-        activeEffects.remove(e);
-        addEffect(type, ballManager, paddle);       // tạo lại và áp dụng lại
     }
 
     private Effect createEffect(char type) {

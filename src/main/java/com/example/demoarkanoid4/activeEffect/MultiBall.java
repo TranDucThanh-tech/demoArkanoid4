@@ -4,9 +4,10 @@ import com.example.demoarkanoid4.VARIABLES;
 import com.example.demoarkanoid4.core.ball.Ball;
 import com.example.demoarkanoid4.manager.BallManager;
 import com.example.demoarkanoid4.manager.PaddleManager;
-import com.example.demoarkanoid4.core.paddle.PaddleLike;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 
 public class MultiBall implements Effect {
 
@@ -18,23 +19,35 @@ public class MultiBall implements Effect {
     @Override
     public void apply(BallManager ballManager, PaddleManager paddleManager) {
         List<Ball> activeBalls = ballManager.getBalls();
-        List<Ball> inactiveBalls = ballManager.getInactiveBalls(); // cần thêm getter
-        PaddleLike paddle = paddleManager.getPaddle();
+        Queue<Ball> inactiveBalls = ballManager.getInactiveBalls();
 
-        int currentSize = activeBalls.size();
-        int available = inactiveBalls.size();
-        int maxAdd = Math.min(currentSize, Math.min(available, VARIABLES.MAX_BALL - currentSize));
+        if (activeBalls.isEmpty()) return;
 
-        for (int i = 0; i < maxAdd; i++) {
-            Ball source = activeBalls.get(i);
-            Ball clone = inactiveBalls.remove(inactiveBalls.size() - 1); // lấy bóng cuối
-            clone.copyState(source);
-            activeBalls.add(clone);
+        // Sao chép danh sách hiện tại để tránh clone nhân tiếp trong cùng lượt
+        List<Ball> originalBalls = new ArrayList<>(activeBalls);
+
+        // Góc lệch ±20 độ
+        double[] offsets = { Math.toRadians(-20), Math.toRadians(20) };
+
+        for (Ball mainBall : originalBalls) {
+            double baseSpeed = mainBall.getVelocity().length();
+            double baseAngle = mainBall.getVelocity().getAngle();
+
+            for (double offset : offsets) {
+                Ball clone = inactiveBalls.poll();
+                if (clone == null) return; // hết bóng trong pool thì dừng luôn
+
+                clone.copyState(mainBall);
+                clone.getVelocity().setAngleAndLength(baseAngle + offset, baseSpeed);
+                clone.launch();
+
+                activeBalls.add(clone);
+            }
         }
     }
 
     @Override
     public void revert(BallManager ballManager, PaddleManager paddleManager) {
-        // MultiBall không revert (không thể “xóa” bóng dư)
+        // MultiBall không revert
     }
 }

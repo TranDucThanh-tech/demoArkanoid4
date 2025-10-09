@@ -23,21 +23,30 @@ public class Ball extends GameObject implements BallLike {
     // ==================== CONSTRUCTOR ==================== //
     public Ball() {
         super(VARIABLES.IMAGE_OF_BALL, VARIABLES.INIT_BALL_X, VARIABLES.INIT_BALL_Y);
-        this.currentSpeed = VARIABLES.SPEED_OF_BALL;
+        this.currentSpeed = baseSpeed;
         this.stuck = true;
-        this.velocity = new Vector2D(0, -1); // hướng lên trên
+        this.velocity = new Vector2D(0, -1); // hướng lên
         this.strong = VARIABLES.STRONG_OF_BALL;
         this.collisionMode = CollisionMode.NORMAL;
     }
 
-    /** Constructor sao chép (cho MultiBall) */
+    /** Copy trạng thái (cho MultiBall) */
     public void copyState(Ball original) {
         this.image = original.getImage();
+        this.x = original.x;
+        this.y = original.y;
+        this.width = original.width;
+        this.height = original.height;
+
         this.currentSpeed = original.getSpeed();
-        this.stuck = false;
-        this.velocity = new Vector2D(original.getVelocity().x, -1);
+        this.stuck = false; // bóng được thả ra ngay
+
+        // SAO CHÉP VẬN TỐC CHÍNH XÁC
+        this.velocity = new Vector2D(original.getVelocity().x, original.getVelocity().y);
+
         this.strong = original.getStrong();
         this.collisionMode = original.getCollisionMode();
+        setPosition();
     }
 
     // ==================== UPDATE ==================== //
@@ -46,8 +55,8 @@ public class Ball extends GameObject implements BallLike {
             // Bóng dính paddle
             double targetX = paddle.getX() + paddle.getWidth() / 2.0 - getWidth() / 2.0;
             double targetY = paddle.getY() - getHeight();
+            double lerpFactor = 0.1;
 
-            double lerpFactor = 0.1; // càng nhỏ thì bóng "nặng"
             x += (targetX - x) * lerpFactor;
             y += (targetY - y) * lerpFactor;
 
@@ -76,24 +85,16 @@ public class Ball extends GameObject implements BallLike {
         }
     }
 
-
     public void resetState(PaddleLike paddle) {
         stick();
         double targetX = paddle.getX() + paddle.getWidth() / 2.0 - getWidth() / 2.0;
         double targetY = paddle.getY() - getHeight();
 
-        double lerpFactor = 0.1; // càng nhỏ thì bóng "nặng"
-        x += (targetX - x) * lerpFactor;
-        y += (targetY - y) * lerpFactor;
-
-        // Giới hạn trong phạm vi paddle
-        double minX = paddle.getX();
-        double maxX = paddle.getX() + paddle.getWidth() - getWidth();
-        if (x < minX) x = minX;
-        if (x > maxX) x = maxX;
-
+        x = targetX;
+        y = targetY;
         velocity = new Vector2D(0, -1);
         collisionMode = CollisionMode.NORMAL;
+        currentSpeed = baseSpeed;
         setPosition();
     }
 
@@ -105,7 +106,6 @@ public class Ball extends GameObject implements BallLike {
     }
 
     public double calculateAngle(PaddleLike paddle) {
-        // góc từ 30° (bên phải) đến 150° (bên trái)
         double ratio = calculateHitRatio(paddle);
         return Math.toRadians(150 * (1 - ratio) + 30 * ratio);
     }
@@ -117,11 +117,8 @@ public class Ball extends GameObject implements BallLike {
 
     // ==================== GET/SET ==================== //
     public void setVelocity(double x, double y) {
-        if (x == 0 && y == 0) {
-            velocity = new Vector2D(0, 0);
-        } else {
-            velocity = new Vector2D(x, y).normalize();
-        }
+        if (x == 0 && y == 0) velocity = new Vector2D(0, 0);
+        else velocity = new Vector2D(x, y).normalize();
     }
 
     public Vector2D getVelocity() { return velocity; }
@@ -136,18 +133,9 @@ public class Ball extends GameObject implements BallLike {
     public int getStrong() { return strong; }
     public void setStrong(int strong) { this.strong = strong; }
 
-    // ==================== COLLISION MODE ==================== //
-    public void setCollisionMode(CollisionMode mode) {
-        this.collisionMode = mode;
-    }
-
-    public CollisionMode getCollisionMode() {
-        return collisionMode;
-    }
-
-    public boolean isPiercing() {
-        return collisionMode == CollisionMode.PIERCING;
-    }
+    public void setCollisionMode(CollisionMode mode) { this.collisionMode = mode; }
+    public CollisionMode getCollisionMode() { return collisionMode; }
+    public boolean isPiercing() { return collisionMode == CollisionMode.PIERCING; }
 
     // ==================== DRAW ==================== //
     @Override
