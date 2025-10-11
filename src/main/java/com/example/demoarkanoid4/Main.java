@@ -1,7 +1,8 @@
 package com.example.demoarkanoid4;
 
-import com.example.demoarkanoid4.manager.GameManager;
-import com.example.demoarkanoid4.utils.InputHandler;
+import com.example.demoarkanoid4.controller.system.GameManager;
+import com.example.demoarkanoid4.model.utils.GlobalVar;
+import com.example.demoarkanoid4.model.utils.InputHandler;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -12,7 +13,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         try {
             GameManager gameManager = new GameManager();
-            Scene scene = new Scene(gameManager, VARIABLES.WIDTH, VARIABLES.HEIGHT);
+            Scene scene = new Scene(gameManager, GlobalVar.WIDTH, GlobalVar.HEIGHT);
 
             InputHandler inputHandler = new InputHandler(gameManager.getPaddle(), gameManager.getBalls());
             inputHandler.input(scene);

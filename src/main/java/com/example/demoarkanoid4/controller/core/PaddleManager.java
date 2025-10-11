@@ -1,0 +1,26 @@
+package com.example.demoarkanoid4.controller.core;
+
+import com.example.demoarkanoid4.model.core.paddle.Paddle;
+import javafx.scene.canvas.GraphicsContext;
+
+public class PaddleManager {
+    private Paddle paddle;
+
+    public PaddleManager(Paddle paddle) {
+         this.paddle = paddle;
+    }
+
+    public void update(double deltaTime) {
+        paddle.update(deltaTime);
+    }
+
+    public void render(GraphicsContext gc) {
+        paddle.render(gc);
+    }
+
+    public Paddle getPaddle() {
+        return paddle;
+    }
+
+    public void resetState() { paddle.resetState();}
+}

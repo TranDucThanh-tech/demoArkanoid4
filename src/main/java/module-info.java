@@ -15,18 +15,18 @@ module com.example.demoarkanoid {
     exports com.example.demoarkanoid4;
     opens com.example.demoarkanoid4 to javafx.fxml;
 
-    exports com.example.demoarkanoid4.core;
-    opens com.example.demoarkanoid4.core to javafx.fxml;
+    exports com.example.demoarkanoid4.model.core;
+    opens com.example.demoarkanoid4.model.core to javafx.fxml;
 
-    exports com.example.demoarkanoid4.core.ball;
-    opens com.example.demoarkanoid4.core.ball to javafx.fxml;
+    exports com.example.demoarkanoid4.model.core.ball;
+    opens com.example.demoarkanoid4.model.core.ball to javafx.fxml;
 
-    exports com.example.demoarkanoid4.core.paddle;   // thêm
-    opens com.example.demoarkanoid4.core.paddle to javafx.fxml; // thêm
+    exports com.example.demoarkanoid4.model.core.paddle;   // thêm
+    opens com.example.demoarkanoid4.model.core.paddle to javafx.fxml; // thêm
 
-    exports com.example.demoarkanoid4.core.brick;
-    opens com.example.demoarkanoid4.core.brick to javafx.fxml;
-    exports com.example.demoarkanoid4.utils;
-    opens com.example.demoarkanoid4.utils;
+    exports com.example.demoarkanoid4.model.core.brick;
+    opens com.example.demoarkanoid4.model.core.brick to javafx.fxml;
+    exports com.example.demoarkanoid4.model.utils;
+    opens com.example.demoarkanoid4.model.utils;
 
 }
