@@ -49,5 +49,9 @@ public class EffectManager {
             default: return null;
         }
     }
+
+    public void clear(){
+        activeEffects.clear();
+    }
 }
 

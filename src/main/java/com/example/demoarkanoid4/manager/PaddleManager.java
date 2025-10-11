@@ -22,5 +22,5 @@ public class PaddleManager {
         return paddle;
     }
 
-    public void reset() { paddle.resetState();}
+    public void resetState() { paddle.resetState();}
 }

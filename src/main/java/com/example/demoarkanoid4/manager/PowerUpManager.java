@@ -10,7 +10,6 @@ import java.util.List;
 
 public class PowerUpManager {
     private final List<PowerUp> powerUps = new ArrayList<>();
-    private final List<PowerUp> inactivePowerUps = new ArrayList<>();
 
     public void update(double deltaTime) {
         for (PowerUp powerUp : powerUps){
@@ -29,7 +28,7 @@ public class PowerUpManager {
     public void trySpawnPowerUp(BrickLike brick) {
         if (GameRandom.nextDouble() < VARIABLES.DROP_RATE) {
             char type = getRandomType();
-            PowerUp powerUp = new PowerUp(type, VARIABLES.IMAGE_OF_POWERUP[type - '0']);
+            PowerUp powerUp = new PowerUp(type);
             powerUp.dropFrom(brick);
             powerUps.add(powerUp);
         }
@@ -43,5 +42,9 @@ public class PowerUpManager {
 
     public List<PowerUp> getPowerUps() {
         return powerUps;
+    }
+
+    public void clear(){
+        powerUps.clear();
     }
 }

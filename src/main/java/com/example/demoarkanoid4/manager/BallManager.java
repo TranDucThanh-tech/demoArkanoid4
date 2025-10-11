@@ -5,18 +5,17 @@ import com.example.demoarkanoid4.core.ball.Ball;
 import com.example.demoarkanoid4.core.paddle.PaddleLike;
 import javafx.scene.canvas.GraphicsContext;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class BallManager {
 
-    private final List<Ball> balls = new ArrayList<>();          // Bóng đang hoạt động
-    private final Queue<Ball> inactiveBalls = new ArrayDeque<>(); // Pool bóng chưa dùng (FIFO)
+    private final List<Ball> balls = new ArrayList<>(); // Danh sách bóng đang hoạt động
 
     public BallManager() {
-        // Chuẩn bị sẵn pool bóng
-        for (int i = 0; i < VARIABLES.MAX_BALL; i++) {
-            inactiveBalls.offer(new Ball()); // thêm vào cuối queue
-        }
+        // Khởi tạo một quả bóng đầu tiên
+        balls.add(new Ball());
     }
 
     public void update(double deltaTime, PaddleLike paddle) {
@@ -25,24 +24,19 @@ public class BallManager {
             Ball ball = iterator.next();
             ball.update(deltaTime, paddle);
 
-            // Nếu bóng rơi khỏi màn hình
+            // Nếu bóng rơi khỏi màn hình thì loại bỏ
             if (ball.getY() > VARIABLES.HEIGHT) {
                 iterator.remove();
-                inactiveBalls.offer(ball); // trả lại cuối hàng chờ
-                System.out.println("Inactive size: " + inactiveBalls.size());
             }
         }
 
-        // Nếu không còn bóng nào hoạt động → tái sử dụng một bóng
-        if (balls.isEmpty() && !inactiveBalls.isEmpty()) {
-            Ball newBall = inactiveBalls.poll();
-            if (newBall != null) {
-                newBall.resetState(paddle); // Đưa về trạng thái chờ
-                balls.add(newBall);
-            }
+        // Nếu không còn bóng nào → tạo lại 1 bóng mới
+        if (balls.isEmpty()) {
+            Ball newBall = new Ball();
+            newBall.resetState(paddle);
+            balls.add(newBall);
         }
     }
-
 
     public void render(GraphicsContext gc) {
         for (Ball ball : balls) {
@@ -50,11 +44,23 @@ public class BallManager {
         }
     }
 
-    public List<Ball> getBalls() {
-        return balls;
+    public void resetState(PaddleLike paddle) {
+        // Giữ lại 1 bóng duy nhất
+        while (balls.size() > 1) {
+            balls.remove(balls.size() - 1);
+        }
+
+        // Nếu không còn bóng thì tạo mới
+        if (balls.isEmpty()) {
+            Ball newBall = new Ball();
+            newBall.resetState(paddle);
+            balls.add(newBall);
+        } else {
+            balls.get(0).resetState(paddle);
+        }
     }
 
-    public Queue<Ball> getInactiveBalls() {
-        return inactiveBalls;
+    public List<Ball> getBalls() {
+        return balls;
     }
 }

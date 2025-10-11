@@ -1,35 +1,34 @@
 package com.example.demoarkanoid4.manager;
+
 import com.example.demoarkanoid4.VARIABLES;
 import com.example.demoarkanoid4.core.ball.Ball;
 import com.example.demoarkanoid4.core.paddle.Paddle;
-import com.example.demoarkanoid4.core.Wall;
+import com.example.demoarkanoid4.states.MapData;
 import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.layout.Pane;
-import java.util.ArrayList;
-import java.util.List;
 
 public class GameManager extends Pane {
     private AnimationTimer timer;
 
-    private BrickManager            brickManager;
-    private CollisionManager        collisionManager;
-    private WallManager             wallManager;
-    private PaddleManager           paddleManager;
-    private PowerUpManager          powerUpManager;
-    private BallManager             ballManager;
-    private EffectManager           effectManager;
+    private BrickManager brickManager;
+    private CollisionManager collisionManager;
+    private WallManager wallManager;
+    private PaddleManager paddleManager;
+    private PowerUpManager powerUpManager;
+    private BallManager ballManager;
+    private EffectManager effectManager;
+    private MapManager mapManager;
 
-
-    private boolean                 inGame;
-    private GraphicsContext         gc;
-
+    private int currentLevel = 1;
+    private boolean inGame = true;
+    private GraphicsContext gc;
 
     public GameManager() {
-        setFocusTraversable(true); // To allow requestFocus()
+        setFocusTraversable(true);
         initBoard();
     }
 
@@ -38,12 +37,17 @@ public class GameManager extends Pane {
         Canvas canvas = new Canvas(VARIABLES.WIDTH, VARIABLES.HEIGHT);
         gc = canvas.getGraphicsContext2D();
         getChildren().add(canvas);
-        inGame = true;
+
+        AssetManager.preloadAssets(); // ✅ load hình ảnh, âm thanh... trước khi game chạy
         gameInit();
     }
 
+    
+
     private void gameInit() {
         Paddle paddle = new Paddle();
+
+        // ✅ Object pooling: mỗi manager sẽ quản lý danh sách sẵn
         ballManager = new BallManager();
         paddleManager = new PaddleManager(paddle);
         brickManager = new BrickManager();
@@ -51,12 +55,11 @@ public class GameManager extends Pane {
         collisionManager = new CollisionManager();
         powerUpManager = new PowerUpManager();
         effectManager = new EffectManager();
-        brickManager.generateLevel();
-        wallManager.generateLevel();
+        mapManager = new MapManager();
+
+        loadLevel(currentLevel);
         loop();
     }
-
-
 
     private void loop() {
         final double FPS = 60.0;
@@ -70,66 +73,81 @@ public class GameManager extends Pane {
                 accumulator[0] += now - lastUpdate[0];
                 lastUpdate[0] = now;
 
+                // Giới hạn update theo tốc độ khung hình
                 while (accumulator[0] >= UPDATE_INTERVAL) {
                     update(1.0 / FPS);
                     accumulator[0] -= UPDATE_INTERVAL;
                 }
+
                 render();
             }
         };
         timer.start();
     }
 
-
     private void gameFinished() {
         gc.setFill(Color.BLACK);
         gc.setFont(new Font("Verdana", 18));
-        gc.fillText("GameOver",
-                (VARIABLES.WIDTH - "GameOver".length() * 10) / 2.0,
+        gc.fillText("Game Over",
+                (VARIABLES.WIDTH - "Game Over".length() * 10) / 2.0,
                 VARIABLES.HEIGHT / 2.0);
     }
 
     public void update(double deltaTime) {
-        // 1) cập nhật paddle trước để ball (nếu ở trạng thái stuck) đặt đúng vị trí dựa vào paddle
         paddleManager.update(deltaTime);
         ballManager.update(deltaTime, paddleManager.getPaddle());
-        collisionManager.handleBallPaddleCollision(ballManager, paddleManager);
         collisionManager.handleBallWallCollision(ballManager, wallManager);
+        collisionManager.handleBallPaddleCollision(ballManager, paddleManager);
         collisionManager.handleBallBrickCollision(ballManager, brickManager, powerUpManager);
         collisionManager.handlePaddlePowerUpCollision(powerUpManager, paddleManager, effectManager, ballManager);
-        brickManager.update();
         powerUpManager.update(deltaTime);
         effectManager.update(ballManager, paddleManager);
-
     }
 
-
     public void render() {
-        gc.clearRect(0,0, VARIABLES.WIDTH, VARIABLES.HEIGHT);
-        if(!inGame){
+        // ✅ clearRect nhanh hơn fillRect vì nó bỏ qua màu nền
+        gc.clearRect(0, 0, VARIABLES.WIDTH, VARIABLES.HEIGHT);
+
+        if (!inGame) {
             gameFinished();
             return;
         }
-        ballManager.render(gc);
-        brickManager.render(gc);
-        paddleManager.render(gc);
+
         wallManager.render(gc);
+        brickManager.render(gc);
+        ballManager.render(gc);
+        paddleManager.render(gc);
         powerUpManager.render(gc);
     }
 
     private void stopGame() {
         inGame = false;
         timer.stop();
-        // stop background music
-        //SoundManager.getInstance().stopMusic();
     }
 
-    // --- Add these getter methods for Main and InputHandler ---
     public BallManager getBalls() {
         return ballManager;
     }
 
     public PaddleManager getPaddle() {
         return paddleManager;
+    }
+
+    public void loadLevel(int level) {
+        MapData mapData;
+
+        if (level <= 3) {
+            mapData = mapManager.loadMap(level);
+        } else {
+            mapData = mapManager.loadMapFromMatrix(mapManager.createRandomMatrix());
+        }
+
+        wallManager.setWalls(mapData.walls());
+        brickManager.setBricks(mapData.bricks());
+
+        powerUpManager.clear();
+        paddleManager.resetState();
+        ballManager.resetState(paddleManager.getPaddle());
+        effectManager.clear(); // ✅ xóa hiệu ứng cũ khỏi pool
     }
 }

@@ -5,6 +5,7 @@ import com.example.demoarkanoid4.core.PowerUp;
 import com.example.demoarkanoid4.core.ball.Ball;
 import com.example.demoarkanoid4.core.Collision;
 import com.example.demoarkanoid4.core.GameObject;
+import com.example.demoarkanoid4.core.brick.SteelBrick;
 import com.example.demoarkanoid4.utils.Vector2D;
 import com.example.demoarkanoid4.core.Wall;
 import com.example.demoarkanoid4.core.brick.Brick;
@@ -77,9 +78,12 @@ public class CollisionManager {
                 if (c != null) {
                     brick.takeDamage(ball);
 
-                    if (!ball.isPiercing()) { // chỉ bật lại nếu không phải bóng xuyên
-                        boolean ballFromSide = c.getOverlapX() < c.getOverlapY();
-                        Vector2D v = ball.getVelocity();
+                    // Nếu là SteelBrick => luôn bật lại (kể cả bóng xuyên)
+                    boolean isSteel = brick instanceof SteelBrick;
+                    boolean ballFromSide = c.getOverlapX() < c.getOverlapY();
+                    Vector2D v = ball.getVelocity();
+
+                    if (isSteel || !ball.isPiercing()) {
                         if (ballFromSide) {
                             ball.setVelocity(-v.x, v.y);
                         } else {
@@ -87,12 +91,13 @@ public class CollisionManager {
                         }
                     }
 
+                    // Gạch bị phá thì thử spawn PowerUp
                     if (brick.isDestroyed()) {
                         powerUpManager.trySpawnPowerUp(brick);
                     }
 
-                    // nếu bóng xuyên thì không break (để phá tiếp)
-                    if (!ball.isPiercing()) break;
+                    // Nếu bóng không xuyên, thì dừng lại ở viên đầu tiên va chạm
+                    break;
                 }
             }
         }
@@ -107,7 +112,6 @@ public class CollisionManager {
             Collision c = buildCollision(p, paddle.getPaddle());
             if (c != null && p.isVisible()) {
                 //SoundManager.getInstance().playSound("power_up");
-                //ActiveEffect here
                 activeEffect.addEffect(p.getType(), balls, paddle);
                 p.setVisible(false);
             }

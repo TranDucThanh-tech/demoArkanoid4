@@ -7,7 +7,6 @@ import com.example.demoarkanoid4.manager.PaddleManager;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
 
 public class MultiBall implements Effect {
 
@@ -19,7 +18,6 @@ public class MultiBall implements Effect {
     @Override
     public void apply(BallManager ballManager, PaddleManager paddleManager) {
         List<Ball> activeBalls = ballManager.getBalls();
-        Queue<Ball> inactiveBalls = ballManager.getInactiveBalls();
 
         if (activeBalls.isEmpty()) return;
 
@@ -34,13 +32,17 @@ public class MultiBall implements Effect {
             double baseAngle = mainBall.getVelocity().getAngle();
 
             for (double offset : offsets) {
-                Ball clone = inactiveBalls.poll();
-                if (clone == null) return; // hết bóng trong pool thì dừng luôn
+                //  Tạo mới bóng thay vì lấy từ pool
+                Ball clone = new Ball();
 
+                // Sao chép trạng thái (vị trí, kích thước, v.v.)
                 clone.copyState(mainBall);
+
+                // Điều chỉnh hướng bay
                 clone.getVelocity().setAngleAndLength(baseAngle + offset, baseSpeed);
                 clone.launch();
 
+                // Thêm vào danh sách bóng hoạt động
                 activeBalls.add(clone);
             }
         }

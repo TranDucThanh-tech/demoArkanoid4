@@ -7,15 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WallManager {
-    private final List<Wall> walls = new ArrayList<>();
+    //private final List<Wall> wallsFromMap = new ArrayList<>();
+    private Wall[] walls;
+
     public void generateLevel() {
-        for (int i = 0; i < VARIABLES.N_OF_WALLS_LEFT_RIGHT; i++) {
-            walls.add(new Wall(Wall.Side.LEFT, 0, i * VARIABLES.HEIGHT_OF_WALLS, VARIABLES.WIDTH_OF_WALLS, VARIABLES.HEIGHT_OF_WALLS));
-            walls.add(new Wall(Wall.Side.RIGHT, VARIABLES.WIDTH - VARIABLES.WIDTH_OF_WALLS, i * VARIABLES.HEIGHT_OF_WALLS, VARIABLES.WIDTH_OF_WALLS, VARIABLES.HEIGHT_OF_WALLS));
-        }
-        for (int i = 0; i < VARIABLES.N_OF_WALLS_TOP; i++) {
-            walls.add(new Wall(Wall.Side.TOP, i * VARIABLES.WIDTH_OF_WALLS, 0, VARIABLES.WIDTH_OF_WALLS, VARIABLES.HEIGHT_OF_WALLS));
-        }
+        
     }
 
     public void render(GraphicsContext gc) {
@@ -25,5 +21,13 @@ public class WallManager {
         }
     }
 
-    public List<Wall>  getWalls() {return walls;}
+    //public List<Wall>  getWalls() {return wallsFromMap;}
+
+    public Wall[] getWalls() {
+        return walls;
+    }
+
+    public void setWalls(List<Wall> newWalls) {
+        walls = newWalls.toArray(new Wall[0]);
+    }
 }

@@ -1,21 +1,15 @@
 package com.example.demoarkanoid4.core.brick;
 
 import com.example.demoarkanoid4.core.ball.BallLike;
+import com.example.demoarkanoid4.manager.AssetManager;
 import javafx.scene.image.Image;
 
 import java.util.Objects;
 
 public class ExplosionBrick extends Brick implements BrickLike{
-    private static final Image EXPLOSION_TEXTURE;
-
-    static {
-        EXPLOSION_TEXTURE = new Image(Objects.requireNonNull(
-                SteelBrick.class.getResourceAsStream("/images/ExplosionBricks.png"),
-                "Missing image file: /images/ExplosionBricks.png"));
-    }
 
     public ExplosionBrick(int x, int y) {
-        super(EXPLOSION_TEXTURE, x, y);
+        super(AssetManager.EXPLOSION_TEXTURE, x, y);
         this.health = 1;
     }
 

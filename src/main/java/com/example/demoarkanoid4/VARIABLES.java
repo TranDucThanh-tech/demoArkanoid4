@@ -29,33 +29,21 @@ public final class VARIABLES {
     public static final int INIT_BALL_Y = HEIGHT - 60;
     public static final float SPEED_OF_BALL = 400.0F;
     public static final float ACCELERATED_SPEED_MULTIPLIER = 2.0F;
-    public static final int MAX_BALL = 15;
+    public static final int MAX_BALL = 4;
     public static final int STRONG_OF_BALL = 1;
     // Bricks
     public static final int N_OF_BRICKS = 150;
-    public static final int BRICKS_PER_ROW = 15;
+    public static final int BRICKS_PER_ROW = 18;
     public static final int MAXHEALTH_OF_BRICKS = 2;
-    public static final int WIDTH_OF_BRICKS = 32;
-    public static final int HEIGHT_OF_BRICKS = 16;
-    public static final int PADDING_X = 6;
-    public static final int PADDING_Y = 6;
-    public static final int FIRST_X_OF_BRICKS = WIDTH_OF_WALLS + PADDING_X / 2;
-    public static final int FIRST_Y_OF_BRICKS = HEIGHT_OF_WALLS + PADDING_Y / 2;
+    public static final int WIDTH_OF_BRICKS = 29;
+    public static final int HEIGHT_OF_BRICKS = 14;
+    public static final int PADDING_X = 0;
+    public static final int PADDING_Y = 0;
 
 
-    // Images
-    public static final String IMAGE_OF_BALL = "/images/Ball.png";
-    public static final String IMAGE_OF_PADDLE = "/images/Paddle.png";
-    public static final String IMAGE_OF_WALL = "/images/Wall.png";
-
-    public static final String IMAGE_OF_FASTER = "/images/Faster.png";
-    public static final String IMAGE_OF_BIGGERPADDLE = "/images/Faster.png";
-    public static final String IMAGE_OF_MULTIBALL = "/images/Faster.png";
-    public static final String IMAGE_OF_STRONGER = "/images/Faster.png";
-    public static final String[] IMAGE_OF_POWERUP =
-            {IMAGE_OF_FASTER, IMAGE_OF_BIGGERPADDLE, IMAGE_OF_MULTIBALL, IMAGE_OF_STRONGER};
 
     //PowerUp
+    public static final int N_OF_POWERUP = 4;
     public static final char FASTER = '0';
     public static final char BIGGERPADDLE = '1';
     public static final char STRONGER = '2';

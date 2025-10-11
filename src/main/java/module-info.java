@@ -12,7 +12,6 @@ module com.example.demoarkanoid {
     requires com.almasb.fxgl.all;
     requires javafx.graphics;
 
-
     exports com.example.demoarkanoid4;
     opens com.example.demoarkanoid4 to javafx.fxml;
 
